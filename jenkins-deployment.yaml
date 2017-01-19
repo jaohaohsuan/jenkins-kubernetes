@@ -1,0 +1,24 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: jenkins-master
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: jenkins
+        jenkins: master
+    spec:
+      containers:
+      - name: jenkins
+        image: henryrao/jenkins-kubernetes:0.1
+        ports:
+          - containerPort: 8080
+          - containerPort: 50000
+        volumeMounts:
+          - name: data
+            mountPath: /var/jenkins_home
+        env:
+          - name: TRY_UPGRADE_IF_NO_MARKER
+            value: "true"
