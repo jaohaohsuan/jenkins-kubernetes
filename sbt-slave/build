@@ -1,0 +1,15 @@
+#!/bin/bash
+
+curl -SLs https://raw.githubusercontent.com/paulp/sbt-extras/master/sbt > ./sbt
+chmod +x ./sbt
+cat << EOF > Dockerfile
+FROM jenkinsci/jnlp-slave:latest
+
+COPY sbt /usr/local/bin/sbt
+EOF
+
+repo=henryrao
+tag=0.1
+
+docker build --pull -t ${repo}/sbt-slave:$tag .
+docker push ${repo}/sbt-slave:$tag
