@@ -1,0 +1,68 @@
+#!/bin/bash -ex
+
+# download images script
+{ curl -SLsO https://raw.githubusercontent.com/paulp/sbt-extras/master/sbt ; chmod +x sbt ; }
+
+curl -SLsO https://raw.githubusercontent.com/jenkinsci/docker-jnlp-slave/master/jenkins-slave
+chmod +x ./jenkins-slave
+
+jenkins_remoting_ver=2.62
+docker_gid=`sed -nr "s/^docker:x:([0-9]+):.*/\1/p" /etc/group`
+jenkins_uid=10000
+jenkins_gid=$jenkins_uid
+coreos_ver=$(source /etc/os-release && echo $VERSION)
+
+repo=henryrao
+tags=( "${jenkins_remoting_ver}-coreos_$coreos_ver" "${jenkins_remoting_ver}-coreos" "latest" )
+
+release() {
+  local image=$1
+  local dockerfile=$2
+  local extras=$3
+
+  # copy Dockerfile as base template
+  cp Dockerfile $dockerfile
+  cat << EOF >> $dockerfile
+
+# docker gid depends on what os you are installed
+ENV HOME /home/jenkins
+RUN set -ex \\
+  && addgroup -g $jenkins_gid jenkins \\
+  && addgroup -g $docker_gid docker \\
+  && adduser -h "\$HOME" -u $jenkins_uid -G jenkins -G docker -s /bin/bash -D jenkins
+
+ENV DOCKER_ALPINE_VERSION 1.12.6-r0
+RUN set -x \\
+  && apk add --no-cache \\
+    docker="\$DOCKER_ALPINE_VERSION"
+
+$extras
+
+USER jenkins
+RUN mkdir /home/jenkins/.jenkins
+VOLUME /home/jenkins/.jenkins
+WORKDIR /home/jenkins
+EOF
+  docker build --pull \
+              --build-arg JENKINS_REMOTING_VERSION=$jenkins_remoting_ver \
+              -t ${repo}/$image:dev -f $dockerfile .
+  for t in "${tags[@]}"; do
+    docker tag ${repo}/$image:dev ${repo}/$image:$t
+    docker push ${repo}/$image:$t
+  done
+}
+
+release jnlp-slave Dockerfile.jnlp-slave "$(cat << EOF1
+# tools
+RUN apk add --no-cache netcat-openbsd
+EOF1
+)"
+
+# make scala build environment
+# sed '$a\\nCOPY sbt /usr/local/bin/sbt' Dockerfile > Dockerfile.sbt
+release sbt-jnlp-slave Dockerfile.sbt-jnlp-slave "$(cat << EOF2
+# tools
+RUN apk add --no-cache shadow bash vim openssh-client sigar netcat-openbsd
+COPY sbt /usr/local/bin/sbt
+EOF2
+)"
