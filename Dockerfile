@@ -9,5 +9,5 @@ RUN /usr/local/bin/install-plugins.sh \
 #    workflow-step-api \
 #    script-security \
 ENV JAVA_OPTS="-Dorg.apache.commons.jelly.tags.fmt.timeZone=Asia/Taipei -Djenkins.install.runSetupWizard=false"
-COPY config.xml /usr/share/jenkins/ref/config.xml.override
+# COPY config.xml /usr/share/jenkins/ref/config.xml.override
 COPY basic-security.groovy /usr/share/jenkins/ref/init.groovy.d/basic-security.groovy
