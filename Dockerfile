@@ -1,4 +1,4 @@
-FROM jenkins:alpine
+FROM jenkins:latest
 RUN /usr/local/bin/install-plugins.sh \
     git \
     kubernetes-ci \
@@ -8,5 +8,6 @@ RUN /usr/local/bin/install-plugins.sh \
 #    display-url-api \
 #    workflow-step-api \
 #    script-security \
-ENV JAVA_OPTS -Dorg.apache.commons.jelly.tags.fmt.timeZone=Asia/Taipei
-# COPY config.xml /usr/share/jenkins/ref/config.xml.override
+ENV JAVA_OPTS="-Dorg.apache.commons.jelly.tags.fmt.timeZone=Asia/Taipei -Djenkins.install.runSetupWizard=false"
+COPY config.xml /usr/share/jenkins/ref/config.xml.override
+COPY basic-security.groovy /usr/share/jenkins/ref/init.groovy.d/basic-security.groovy
