@@ -1,0 +1,83 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: akka2
+  labels:
+    app: akka-cluster
+spec:
+  ports:
+  - port: 2551
+    name: netty
+  clusterIP: None
+  selector:
+    akka-cluster: backend
+---
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: backend
+spec:
+  serviceName: akka2
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        env: dev
+        lang: scala
+        akka-cluster: backend
+      annotations:
+        pod.beta.kubernetes.io/init-containers: '[
+          {
+                "name": "init",
+                "image": "busybox:latest",
+                "command": [ "sh", "-c", "chown 10000:10000 /home/jenkins" ],
+                "volumeMounts": [
+                  { "name": "data", "mountPath": "/home/jenkins" }
+                ],
+                "imagePullPolicy": "IfNotPresent"
+          }
+        ]'
+    spec:
+      containers:
+        - name: "slave"
+          image: "henryrao/sbt-jnlp-slave:latest"
+          imagePullPolicy: Always
+          command:
+          - "sh"
+          - "/home/jenkins/bin/run"
+          - "node2"
+          ports:
+            - containerPort: 2551
+          env:
+          - name: TERM
+            value: xterm
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          volumeMounts:
+            - name: data
+              mountPath: /home/jenkins
+            - name: docker
+              mountPath: /var/run/docker.sock
+          livenessProbe:
+            exec:
+              command:
+              - "/home/jenkins/bin/akka-cluster"
+              - "localhost"
+              - "3000"
+              - "is-available"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: akka-cluster
+        - name: docker
+          hostPath:
+            path: /var/run/docker.sock
