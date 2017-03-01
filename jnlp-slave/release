@@ -6,7 +6,7 @@
 curl -SLsO https://raw.githubusercontent.com/jenkinsci/docker-jnlp-slave/master/jenkins-slave
 chmod +x ./jenkins-slave
 
-jenkins_remoting_ver=2.62
+jenkins_remoting_ver=3.5
 docker_gid=`sed -nr "s/^docker:x:([0-9]+):.*/\1/p" /etc/group`
 jenkins_uid=10000
 jenkins_gid=$jenkins_uid
@@ -60,9 +60,12 @@ EOF1
 
 # make scala build environment
 # sed '$a\\nCOPY sbt /usr/local/bin/sbt' Dockerfile > Dockerfile.sbt
-release sbt-jnlp-slave Dockerfile.sbt-jnlp-slave "$(cat << EOF2
-# tools
-RUN apk add --no-cache shadow bash vim openssh-client sigar netcat-openbsd
-COPY sbt /usr/local/bin/sbt
-EOF2
-)"
+# release sbt-jnlp-slave Dockerfile.sbt-jnlp-slave "$(cat << EOF2
+# # tools
+# RUN apk add --no-cache shadow bash vim openssh-client sigar netcat-openbsd jq curl
+# RUN mkdir -p /opt && \
+#    curl -Lsk http://downloads.typesafe.com/akka/akka_2.11-2.4.16.zip?_ga=1.258492426.1865997571.1480378852 | tar -zxC /opt
+# COPY sbt /usr/local/bin/sbt
+# 
+# EOF2
+# )"

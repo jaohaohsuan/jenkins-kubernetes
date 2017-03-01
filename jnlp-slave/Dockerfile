@@ -20,8 +20,8 @@ RUN { \
 ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
 ENV PATH $PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin
 
-ENV JAVA_VERSION 8u111
-ENV JAVA_ALPINE_VERSION 8.111.14-r1
+ENV JAVA_VERSION 8u121
+ENV JAVA_ALPINE_VERSION 8.121.13-r0
 
 RUN set -x \
   && apk add --no-cache \
@@ -29,7 +29,7 @@ RUN set -x \
     openjdk8="$JAVA_ALPINE_VERSION" \
   && [ "$JAVA_HOME" = "$(docker-java-home)" ]
 
-ARG JENKINS_REMOTING_VERSION=2.62
+ARG JENKINS_REMOTING_VERSION=3.5
 RUN apk --update add --virtual build-dependencies curl \
   && curl --create-dirs -sSLo /usr/share/jenkins/slave.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${JENKINS_REMOTING_VERSION}/remoting-${JENKINS_REMOTING_VERSION}.jar \
   && chmod 755 /usr/share/jenkins \

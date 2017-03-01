@@ -1,5 +1,6 @@
 FROM jenkins:latest
 RUN /usr/local/bin/install-plugins.sh \
+    workflow-aggregator:2.4 \
     git \
     kubernetes-ci \
     ansicolor:0.4.3
