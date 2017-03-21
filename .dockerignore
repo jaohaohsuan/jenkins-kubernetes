@@ -1,0 +1,4 @@
+jnlp-slave
+sbt-slave
+.git
+.dockerignore
