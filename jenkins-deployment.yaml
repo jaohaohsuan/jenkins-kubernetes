@@ -21,10 +21,10 @@ metadata:
    volume.beta.kubernetes.io/storage-class: default
 spec:
  accessModes:
-  - ReadWriteOnce
+  - ReadWriteMany
  resources:
    requests:
-     storage: 1Gi
+     storage: 10Gi
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -52,17 +52,18 @@ spec:
     spec:
       containers:
       - name: jenkins
-        image: henryrao/jenkins-kubernetes:0.1
+        image: henryrao/jenkins-kubernetes:latest
+        imagePullPolicy: Always
         ports:
           - containerPort: 8080
           - containerPort: 50000
         volumeMounts:
           - name: data
-            mountPath: /var/jenkins_home
+            mountPath: /var/jenkins_home/jobs
         env:
           - name: TRY_UPGRADE_IF_NO_MARKER
             value: "true"
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: jenkins-master
+            claimName: jenkins-master-jobs

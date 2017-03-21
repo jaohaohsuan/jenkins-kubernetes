@@ -1,14 +1,16 @@
 FROM jenkins:latest
 RUN /usr/local/bin/install-plugins.sh \
-    workflow-aggregator:2.4 \
+    workflow-aggregator \
+    docker-workflow \
     git \
-    kubernetes-ci \
-    ansicolor:0.4.3
+    kubernetes \
+    workflow-durable-task-step:2.8 \
+    script-security \
+    ansicolor
 
-#    credentials \
-#    display-url-api \
-#    workflow-step-api \
-#    script-security \
 ENV JAVA_OPTS="-Dorg.apache.commons.jelly.tags.fmt.timeZone=Asia/Taipei -Djenkins.install.runSetupWizard=false"
-# COPY config.xml /usr/share/jenkins/ref/config.xml.override
-COPY basic-security.groovy /usr/share/jenkins/ref/init.groovy.d/basic-security.groovy
+
+COPY init.groovy.d /usr/share/jenkins/ref/init.groovy.d
+# COPY plugins/*.hpi /usr/share/jenkins/ref/plugins/
+
+VOLUME ["/var/jenkins_home/plugins"]
