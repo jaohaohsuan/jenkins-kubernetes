@@ -16,7 +16,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
- name: jenkins-master
+ name: jenkins-master-jobs
  annotations:
    volume.beta.kubernetes.io/storage-class: default
 spec:
@@ -24,7 +24,7 @@ spec:
   - ReadWriteMany
  resources:
    requests:
-     storage: 10Gi
+     storage: 1Gi
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -42,9 +42,9 @@ spec:
           {
             "name": "init",
             "image": "busybox:latest",
-            "command": [ "sh", "-c", "chown 1000:1000 /var/jenkins_home" ],
+            "command": [ "sh", "-c", "chown 1000:1000 /var/jenkins_home/jobs" ],
             "volumeMounts": [
-              { "name": "data", "mountPath": "/var/jenkins_home" }
+              { "name": "jobs", "mountPath": "/var/jenkins_home/jobs" }
             ],
             "imagePullPolicy": "IfNotPresent"
           }
@@ -58,12 +58,12 @@ spec:
           - containerPort: 8080
           - containerPort: 50000
         volumeMounts:
-          - name: data
+          - name: jobs
             mountPath: /var/jenkins_home/jobs
         env:
           - name: TRY_UPGRADE_IF_NO_MARKER
             value: "true"
       volumes:
-        - name: data
+        - name: jobs
           persistentVolumeClaim:
             claimName: jenkins-master-jobs
