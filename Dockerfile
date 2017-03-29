@@ -8,7 +8,8 @@ RUN /usr/local/bin/install-plugins.sh \
     ansicolor \
     blueocean \
     log-parser \
-    git
+    git \
+    ansible
 
 ENV JAVA_OPTS="-Dorg.apache.commons.jelly.tags.fmt.timeZone=Asia/Taipei -Djenkins.install.runSetupWizard=false"
 
