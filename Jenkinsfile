@@ -22,7 +22,7 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
             def imgSha
             stage('build image') {
                 container('docker') {
-                    imgSha = sh(returnStdout: true, script: "docker build --pull --build-arg scalaVer=${params.scalaVer} -q .").trim()[7..-1]
+                    imgSha = sh(returnStdout: true, script: "docker build --pull -q .").trim()[7..-1]
                     echo "${imgSha}"
                 }
             }
