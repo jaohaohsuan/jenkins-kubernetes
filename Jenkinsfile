@@ -12,7 +12,7 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
     properties([
             pipelineTriggers([]),
             parameters([
-                    string(name: 'imageRepo', defaultValue: 'jenkins-kubernetes', description: 'Name of Image' )
+                    string(name: 'imageRepo', defaultValue: 'henryrao/jenkins-kubernetes', description: 'Name of Image' )
             ])
     ])
 
