@@ -2,13 +2,13 @@ FROM jenkins:latest
 RUN /usr/local/bin/install-plugins.sh \
     workflow-aggregator \
     docker-workflow \
-    git \
     kubernetes \
     workflow-durable-task-step \
     script-security \
     ansicolor \
     blueocean \
-    log-parser
+    log-parser \
+    git
 
 ENV JAVA_OPTS="-Dorg.apache.commons.jelly.tags.fmt.timeZone=Asia/Taipei -Djenkins.install.runSetupWizard=false"
 
