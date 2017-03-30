@@ -17,3 +17,13 @@ COPY init.groovy.d /usr/share/jenkins/ref/init.groovy.d
 # COPY plugins/*.hpi /usr/share/jenkins/ref/plugins/
 
 # VOLUME ["/var/jenkins_home/plugins"]
+
+
+USER root
+
+RUN apt-get update && apt-get install -y \
+    docker \
+    ansible \
+  && rm -rf /var/lib/apt/lists/*
+
+USER jenkins
