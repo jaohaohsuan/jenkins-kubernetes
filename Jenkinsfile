@@ -2,7 +2,6 @@
 podTemplate(label: 'jenkins-kubernetes', containers: [
         containerTemplate(name: 'jnlp', image: 'henryrao/jnlp-slave', args: '${computer.jnlpmac} ${computer.name}', alwaysPullImage: true),
         containerTemplate(name: 'kubectl', image: 'henryrao/kubectl:1.5.2', ttyEnabled: true, command: 'cat'),
-        containerTemplate(name: 'docker', image: 'docker:1.12.6', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'ansible', image: 'alpine:edge', ttyEnabled: true, command: 'cat')
 ],
         volumes: [
