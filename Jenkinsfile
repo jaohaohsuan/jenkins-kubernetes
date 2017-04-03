@@ -13,7 +13,7 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
             pipelineTriggers([]),
             parameters([
                     string(name: 'imageRepo', defaultValue: 'henryrao/jenkins-kubernetes', description: 'Name of Image'),
-                    booleanParam(name: 'PRO_DEPLOY', defaultValue: false, description: '',)
+                    booleanParam(name: 'deployToProduction', defaultValue: false, description: '',)
             ])
     ])
 
@@ -32,11 +32,13 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
             stage('deploy') {
                 when {
                     expression {
-                        return params.PRO_DEPLOY
+                        return params.deployToProduction
                     }
                 }
-                container('kubectl') {
-                    sh "kubectl apply -f jenkins-deployment.yaml"
+                steps {
+                    container('kubectl') {
+                        sh "kubectl apply -f jenkins-deployment.yaml"
+                    }
                 }
             }
             step([$class: 'LogParserPublisher', failBuildOnError: true, unstableOnWarning: true, showGraphs: true,
