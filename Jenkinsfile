@@ -12,7 +12,8 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
     properties([
             pipelineTriggers([]),
             parameters([
-                    string(name: 'imageRepo', defaultValue: 'henryrao/jenkins-kubernetes', description: 'Name of Image' )
+                    string(name: 'imageRepo', defaultValue: 'henryrao/jenkins-kubernetes', description: 'Name of Image'),
+                    booleanParam(name: 'PRO_DEPLOY', defaultValue: false, description: '',)
             ])
     ])
 
@@ -29,6 +30,11 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
 
             }
             stage('deploy') {
+                when {
+                    expression {
+                        return params.PRO_DEPLOY
+                    }
+                }
                 container('kubectl') {
                     sh "kubectl apply -f jenkins-deployment.yaml"
                 }
