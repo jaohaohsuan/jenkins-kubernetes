@@ -20,21 +20,14 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
     node('jenkins-kubernetes') {
         ansiColor('xterm') {
             checkout scm
-            def imgSha
-            stage('build image') {
-                container('docker') {
-                    imgSha = sh(returnStdout: true, script: "docker build --pull -q .").trim()[7..-1]
-                    echo "${imgSha}"
+            stage('docker build & push') {
+
+                def image = docker.build "${params.imageRepo}:latest"
+
+                docker.withRegistry('https://registry-1.docker.io/v2', 'docker-login') {
+                    image.push()
                 }
-            }
-            stage('push image') {
-                container('docker') {
-                    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-login', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                        sh "docker login -u $USERNAME -p $PASSWORD"
-                        sh "docker tag ${imgSha} ${params.imageRepo}"
-                        sh "docker push ${params.imageRepo}"
-                    }
-                }
+
             }
             stage('deploy') {
                 container('kubectl') {

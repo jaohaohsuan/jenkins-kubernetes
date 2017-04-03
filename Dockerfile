@@ -15,6 +15,3 @@ RUN /usr/local/bin/install-plugins.sh \
 ENV JAVA_OPTS="-Dorg.apache.commons.jelly.tags.fmt.timeZone=Asia/Taipei -Djenkins.install.runSetupWizard=false"
 
 COPY init.groovy.d /usr/share/jenkins/ref/init.groovy.d
-
-USER jenkins
-
