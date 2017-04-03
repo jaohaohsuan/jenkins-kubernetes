@@ -24,7 +24,7 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
 
                 def image = docker.build "${params.imageRepo}:latest"
 
-                docker.withRegistry('https://registry-1.docker.io/v2', 'docker-login') {
+                docker.withRegistry('https://registry.hub.docker.com', 'docker-login') {
                     image.push()
                 }
 
