@@ -22,9 +22,9 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
             checkout scm
             stage('docker build & push') {
 
-                def image = docker.build("${params.imageRepo}:latest",'.')
+                def image = docker.build('henryrao/jenkins-kubernetes:latest','.')
 
-                docker.withRegistry('https://registry-1.docker.io/v2', 'docker-login') {
+                docker.withRegistry('https://registry.hub.docker.com/', 'docker-login') {
                     image.push('latest')
                 }
 
