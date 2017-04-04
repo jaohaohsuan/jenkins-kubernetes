@@ -60,6 +60,9 @@ spec:
         volumeMounts:
           - name: jobs
             mountPath: /var/jenkins_home/jobs
+          - name: jenkins-credentials
+            mountPath: /usr/share/jenkins/ref/init.groovy.d/credentials.groovy
+            subPath: credentials.groovy
           - name: docker-sock
             mountPath: /var/run/docker.sock
         env:
@@ -72,3 +75,6 @@ spec:
         - name: docker-sock
           hostPath:
             path: /var/run/docker.sock
+        - configMap:
+            name: jenkins-credentials
+          name: jenkins-credentials
