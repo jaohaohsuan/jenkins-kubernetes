@@ -60,6 +60,8 @@ spec:
         volumeMounts:
           - name: jobs
             mountPath: /var/jenkins_home/jobs
+          - name: docker-sock
+            mountPath: /var/run/docker.sock
         env:
           - name: TRY_UPGRADE_IF_NO_MARKER
             value: "true"
@@ -67,3 +69,6 @@ spec:
         - name: jobs
           persistentVolumeClaim:
             claimName: jenkins-master-jobs
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
