@@ -1,9 +1,8 @@
 #!groovy
 podTemplate(label: 'jenkins-kubernetes', containers: [
         containerTemplate(name: 'jnlp', image: 'henryrao/jnlp-slave', args: '${computer.jnlpmac} ${computer.name}', alwaysPullImage: true),
-        containerTemplate(name: 'kubectl', image: 'henryrao/kubectl:1.5.2', ttyEnabled: true, command: 'cat'),
-        containerTemplate(name: 'ansible', image: 'alpine:edge', ttyEnabled: true, command: 'cat')
-],
+        containerTemplate(name: 'kubectl', image: 'henryrao/kubectl:1.5.2', ttyEnabled: true, command: 'cat')
+    ],
         volumes: [
                 hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
         ],
@@ -22,9 +21,13 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
             checkout scm
             stage('docker build & push') {
 
-                def image = docker.build('henryrao/jenkins-kubernetes:latest','.')
+                def jenkinsVer = sh returnStdout: true, script: 'cat Dockerfile | sed -n \'s/FROM jenkins:\\(.*\\)/\\1/p\''
 
                 docker.withRegistry('https://registry.hub.docker.com/', 'docker-login') {
+
+                    def image = docker.build("henryrao/jenkins-kubernetes:${jenkinsVer}")
+
+                    image.push()
                     image.push('latest')
                 }
 
