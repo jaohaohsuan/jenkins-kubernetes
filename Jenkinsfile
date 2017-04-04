@@ -12,7 +12,7 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
             pipelineTriggers([]),
             parameters([
                     string(name: 'imageRepo', defaultValue: 'henryrao/jenkins-kubernetes', description: 'Name of Image'),
-                    booleanParam(name: 'deployToProduction', defaultValue: false, description: '',)
+                    booleanParam(name: 'deployToProduction', defaultValue: false, description: '')
             ])
     ])
 
@@ -21,7 +21,7 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
             checkout scm
             stage('docker build & push') {
 
-                def jenkinsVer = sh returnStdout: true, script: 'cat Dockerfile | sed -n \'s/FROM jenkins:\\(.*\\)/\\1/p\''
+                def jenkinsVer = sh(returnStdout: true, script: 'cat Dockerfile | sed -n \'s/FROM jenkins:\\(.*\\)/\\1/p\'').trim()
 
                 docker.withRegistry('https://registry.hub.docker.com/', 'docker-login') {
 
