@@ -34,7 +34,9 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
             }
             stage('deploy') {
                 if (params.deployToProduction) {
-                    sh "kubectl apply -f jenkins-deployment.yaml"
+                    container('kubectl') {
+                        sh "kubectl apply -f jenkins-deployment.yaml"
+                    }
                 }
             }
             step([$class: 'LogParserPublisher', failBuildOnError: true, unstableOnWarning: true, showGraphs: true,
