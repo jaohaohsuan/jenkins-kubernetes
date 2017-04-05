@@ -25,7 +25,7 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
 
                 docker.withRegistry('https://registry.hub.docker.com/', 'docker-login') {
 
-                    def image = docker.build("henryrao/jenkins-kubernetes:${jenkinsVer}")
+                    def image = docker.build("henryrao/jenkins-kubernetes:${jenkinsVer}", "--no-cache=true --pull .")
 
                     image.push()
                     image.push('latest')
