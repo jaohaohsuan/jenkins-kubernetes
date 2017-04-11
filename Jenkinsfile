@@ -5,8 +5,7 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
     ],
         volumes: [
                 hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
-        ],
-        workspaceVolume: emptyDirWorkspaceVolume(false)
+        ]
 ) {
     properties([
             pipelineTriggers([]),
@@ -19,18 +18,16 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
     node('jenkins-kubernetes') {
         ansiColor('xterm') {
             checkout scm
-            stage('docker build & push') {
-
-                def jenkinsVer = sh(returnStdout: true, script: 'cat Dockerfile | sed -n \'s/FROM jenkins:\\(.*\\)/\\1/p\'').trim()
-
+            def image
+            stage('build') {
+                image = docker.build("henryrao/jenkins-kubernetes", "--no-cache=true --pull .")
+            }
+            stage('push') {
                 docker.withRegistry('https://registry.hub.docker.com/', 'docker-login') {
-
-                    def image = docker.build("henryrao/jenkins-kubernetes:${jenkinsVer}", "--no-cache=true --pull .")
-
-                    image.push()
+                    def jenkinsVer = sh(returnStdout: true, script: 'cat Dockerfile | sed -n \'s/FROM jenkins:\\(.*\\)/\\1/p\'').trim()
+                    image.push("$jenkinsVer")
                     image.push('latest')
                 }
-
             }
             stage('deploy') {
                 if (params.deployToProduction) {
