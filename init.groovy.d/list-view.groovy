@@ -1,4 +1,6 @@
 import hudson.model.View;
+import hudson.model.*;
+import jenkins.model.*;
 
 private InputStream generateXMLForView(String name, String jobRegex) {
     def xml = """<listView>
