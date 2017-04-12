@@ -11,7 +11,8 @@ RUN /usr/local/bin/install-plugins.sh \
     git \
     ansible \
     http_request \
-    cucumber-testresult-plugin
+    cucumber-testresult-plugin \
+    build-pipeline-plugin
 
 ENV JAVA_OPTS="-Dorg.apache.commons.jelly.tags.fmt.timeZone=Asia/Taipei -Djenkins.install.runSetupWizard=false"
 
