@@ -2,7 +2,6 @@ import hudson.model.View;
 
 private InputStream generateXMLForView(String name, String jobRegex) {
     def xml = """<listView>
-      <owner class="hudson" reference="../../.."/>
 	  <name>${name}</name>
       <filterExecutors>false</filterExecutors>
       <filterQueue>false</filterQueue>
