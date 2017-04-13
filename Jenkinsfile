@@ -1,4 +1,15 @@
 #!groovy
+properties(
+    [
+        pipelineTriggers([]),
+        parameters(
+                [
+                    string(name: 'imageRepo', defaultValue: 'henryrao/jenkins-kubernetes', description: 'Name of Image'),
+                    booleanParam(name: 'deployToProduction', defaultValue: false, description: '')
+                ]
+        )
+    ]
+)
 podTemplate(label: 'jenkins-kubernetes', containers: [
         containerTemplate(name: 'jnlp', image: 'henryrao/jnlp-slave', args: '${computer.jnlpmac} ${computer.name}', alwaysPullImage: true),
         containerTemplate(name: 'kubectl', image: 'henryrao/kubectl:1.5.2', ttyEnabled: true, command: 'cat')
@@ -7,14 +18,6 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
                 hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
         ]
 ) {
-    properties([
-            pipelineTriggers([]),
-            parameters([
-                    string(name: 'imageRepo', defaultValue: 'henryrao/jenkins-kubernetes', description: 'Name of Image'),
-                    booleanParam(name: 'deployToProduction', defaultValue: false, description: '')
-            ])
-    ])
-
     node('jenkins-kubernetes') {
         ansiColor('xterm') {
             checkout scm
@@ -29,17 +32,17 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
                     image.push('latest')
                 }
             }
-            stage('deploy') {
-                if (params.deployToProduction) {
+            if (params.deployToProduction) {
+                stage('deploy') {
                     container('kubectl') {
                         sh "kubectl apply -f jenkins-deployment.yaml"
                     }
                 }
             }
+
             step([$class: 'LogParserPublisher', failBuildOnError: true, unstableOnWarning: true, showGraphs: true,
                   projectRulePath: 'jenkins-rule-logparser', useProjectRule: true])
         }
 
     }
-
 }
