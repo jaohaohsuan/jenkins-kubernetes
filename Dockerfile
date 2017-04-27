@@ -1,4 +1,4 @@
-FROM jenkins:2.46.1
+FROM jenkins:2.46.2
 RUN /usr/local/bin/install-plugins.sh \
     workflow-aggregator \
     docker-workflow \
