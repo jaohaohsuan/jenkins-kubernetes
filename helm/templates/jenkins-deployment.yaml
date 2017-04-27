@@ -1,41 +1,14 @@
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: jenkins
-spec:
-  type: NodePort
-  selector:
-    jenkins: master
-  ports:
-    - name: http
-      port: 8080
-    - name: jnlp
-      port: 50000
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
- name: jenkins-master-jobs
- annotations:
-   volume.beta.kubernetes.io/storage-class: default
-spec:
- accessModes:
-  - ReadWriteMany
- resources:
-   requests:
-     storage: 1Gi
----
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: jenkins-master
+  name: {{ .Chart.Name }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-        app: jenkins
+        app: {{ .Chart.Name }}
         jenkins: master
       annotations:
         pod.beta.kubernetes.io/init-containers: '[
@@ -51,12 +24,12 @@ spec:
         ]'
     spec:
       containers:
-      - name: jenkins
-        image: henryrao/jenkins-kubernetes:latest
-        imagePullPolicy: Always
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
-          - containerPort: 8080
-          - containerPort: 50000
+          - containerPort: {{ .Values.service.internalPort }}
+          - containerPort: {{ .Values.service.jnlpPort }}
         volumeMounts:
           - name: jobs
             mountPath: /var/jenkins_home/jobs

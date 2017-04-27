@@ -1,0 +1,14 @@
+# Default values for helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+image:
+  repository: henryrao/jenkins-kubernetes
+  tag: latest
+  pullPolicy: Always
+service:
+  name: jenkins
+  type: NodePort
+  jnlpPort: 50000
+  internalPort: 8080
+
