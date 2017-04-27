@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    jenkins: {{ printf "master-%s" .Release.Name | trunc 63 }}
+    app: {{ .Chart.Name }}
+  ports:
+    - name: http
+      port: {{ .Values.service.internalPort }}
+    - name: jnlp
+      port: {{ .Values.service.jnlpPort }}

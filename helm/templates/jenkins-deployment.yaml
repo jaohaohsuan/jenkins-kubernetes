@@ -1,42 +1,15 @@
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: jenkins
-spec:
-  type: NodePort
-  selector:
-    jenkins: master
-  ports:
-    - name: http
-      port: 8080
-    - name: jnlp
-      port: 50000
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
- name: jenkins-master-jobs
- annotations:
-   volume.beta.kubernetes.io/storage-class: default
-spec:
- accessModes:
-  - ReadWriteMany
- resources:
-   requests:
-     storage: 1Gi
----
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: jenkins-master
+  name: {{ .Chart.Name }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-        app: jenkins
-        jenkins: master
+        app: {{ .Chart.Name }}
+        jenkins: {{ printf "master-%s" .Release.Name | trunc 63 }}
       annotations:
         pod.beta.kubernetes.io/init-containers: '[
           {
@@ -52,11 +25,11 @@ spec:
     spec:
       containers:
       - name: jenkins
-        image: henryrao/jenkins-kubernetes:latest
-        imagePullPolicy: Always
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
-          - containerPort: 8080
-          - containerPort: 50000
+          - containerPort: {{ .Values.service.internalPort }}
+          - containerPort: {{ .Values.service.jnlpPort }}
         volumeMounts:
           - name: jobs
             mountPath: /var/jenkins_home/jobs
@@ -68,13 +41,15 @@ spec:
         env:
           - name: TRY_UPGRADE_IF_NO_MARKER
             value: "true"
+          - name: JAVA_OPTS
+            value: "-Xmx512m -Xms512m"
       volumes:
         - name: jobs
           persistentVolumeClaim:
-            claimName: jenkins-master-jobs
+            claimName: {{ printf "jenkins-master-job-pvc-%s" .Release.Name | trunc 63 }}
         - name: docker-sock
           hostPath:
             path: /var/run/docker.sock
         - configMap:
-            name: jenkins-credentials
+            name: {{ printf "jenkins-credentials-%s" .Release.Name | trunc 63 }}
           name: jenkins-credentials
