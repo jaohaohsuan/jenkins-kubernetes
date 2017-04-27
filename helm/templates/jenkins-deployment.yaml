@@ -9,7 +9,7 @@ spec:
     metadata:
       labels:
         app: {{ .Chart.Name }}
-        jenkins: master
+        jenkins: {{ printf "master-%s" .Release.Name | trunc 63 }}
       annotations:
         pod.beta.kubernetes.io/init-containers: '[
           {
@@ -24,7 +24,7 @@ spec:
         ]'
     spec:
       containers:
-      - name: {{ .Chart.Name }}
+      - name: jenkins
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
@@ -41,13 +41,15 @@ spec:
         env:
           - name: TRY_UPGRADE_IF_NO_MARKER
             value: "true"
+          - name: JAVA_OPTS
+            value: "-Xmx512m -Xms512m"
       volumes:
         - name: jobs
           persistentVolumeClaim:
-            claimName: jenkins-master-jobs
+            claimName: {{ printf "jenkins-master-job-pvc-%s" .Release.Name | trunc 63 }}
         - name: docker-sock
           hostPath:
             path: /var/run/docker.sock
         - configMap:
-            name: jenkins-credentials
+            name: {{ printf "jenkins-credentials-%s" .Release.Name | trunc 63 }}
           name: jenkins-credentials

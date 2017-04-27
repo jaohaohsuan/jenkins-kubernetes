@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
- name: jenkins-master-jobs
+ name: {{ printf "jenkins-master-job-pvc-%s" .Release.Name | trunc 63 }}
  annotations:
    volume.beta.kubernetes.io/storage-class: default
 spec:
