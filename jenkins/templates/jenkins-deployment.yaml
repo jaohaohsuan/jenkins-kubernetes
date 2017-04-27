@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}
+  name: {{ printf "%s-%s" .Chart.Name .Release.Name | trunc 63 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
@@ -28,7 +28,7 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
-          - containerPort: {{ .Values.service.internalPort }}
+          - containerPort: {{ .Values.service.httpPort }}
           - containerPort: {{ .Values.service.jnlpPort }}
         volumeMounts:
           - name: jobs
@@ -46,7 +46,7 @@ spec:
       volumes:
         - name: jobs
           persistentVolumeClaim:
-            claimName: {{ printf "jenkins-master-job-pvc-%s" .Release.Name | trunc 63 }}
+            claimName: {{ printf "jenkins-master-jobs-%s" .Release.Name | trunc 63 }}
         - name: docker-sock
           hostPath:
             path: /var/run/docker.sock

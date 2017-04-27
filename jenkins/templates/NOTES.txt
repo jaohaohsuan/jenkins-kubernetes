@@ -1,0 +1,7 @@
+Setup the defualt docker hub account:
+
+  helm upgrade --set configMap.dockerHub.username=user1,configMap.dockerHub.password=|)a$SvVOrD [Release] [Chart]
+
+default login user account/password:
+
+  admin/admin

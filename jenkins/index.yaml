@@ -1,0 +1,17 @@
+apiVersion: v1
+entries:
+  jenkins-tls:
+  - apiVersion: v1
+    appVersion: 2.46.2
+    created: 2017-04-28T00:04:04.76128928+08:00
+    description: Jekins TLS running on Kubernetes 1.5+
+    digest: fb3e73a522f8063a20590be524db5b18a7394ffd14c70404b57f72fa5d7b983b
+    icon: https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png?version=1&modificationDate=1302753947000&api=v2
+    maintainers:
+    - name: jaohaohsuan
+    - name: tony24681379
+    name: jenkins-tls
+    urls:
+    - http://127.0.0.1:8879/jenkins-tls-0.1.0.tgz
+    version: 0.1.0
+generated: 2017-04-28T00:04:04.760638019+08:00

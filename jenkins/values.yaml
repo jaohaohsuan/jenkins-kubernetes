@@ -7,10 +7,9 @@ image:
   tag: 2.46.2
   pullPolicy: Always
 service:
-  name: jenkins-test
-  type: NodePort
   jnlpPort: 50000
-  internalPort: 8080
+  httpPort: 8080
 configMap:
-  dockerAccount: docker
-  dockerPassword: docker
+  dockerHub:
+    username: docker
+    password: docker
