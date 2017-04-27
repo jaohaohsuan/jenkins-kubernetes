@@ -12,6 +12,6 @@ service:
   jnlpPort: 50000
   internalPort: 8080
 configMap:
-  dockerAccount:
-  dockerPassword: 
+  dockerAccount: docker
+  dockerPassword: docker
 
