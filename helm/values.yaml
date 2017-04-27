@@ -4,7 +4,7 @@
 replicaCount: 1
 image:
   repository: henryrao/jenkins-kubernetes
-  tag: 2.46.1
+  tag: 2.46.2
   pullPolicy: Always
 service:
   name: jenkins-test

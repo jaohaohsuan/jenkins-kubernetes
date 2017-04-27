@@ -42,7 +42,7 @@ spec:
           - name: TRY_UPGRADE_IF_NO_MARKER
             value: "true"
           - name: JAVA_OPTS
-            value: "-Xmx512m -Xms512m"
+            value: "-Dorg.apache.commons.jelly.tags.fmt.timeZone=Asia/Taipei -Djenkins.install.runSetupWizard=false -Xmx512m -Xms512m"
       volumes:
         - name: jobs
           persistentVolumeClaim:
