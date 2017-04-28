@@ -41,6 +41,9 @@ spec:
           - name: jenkins-credentials
             mountPath: /usr/share/jenkins/ref/init.groovy.d/credentials.groovy
             subPath: credentials.groovy
+          - name: kubernetes-cloud
+            mountPath: /usr/share/jenkins/ref/init.groovy.d/kubernetes.groovy
+            subPath: kubernetes.groovy
           - name: docker-sock
             mountPath: /var/run/docker.sock
         env:
@@ -58,5 +61,8 @@ spec:
           hostPath:
             path: /var/run/docker.sock
         - configMap:
-            name: {{ printf "jenkins-credentials-%s" $relname | trunc 63 }}
+            name: {{ printf "jenkins-master-%s" $relname | trunc 63 }}
           name: jenkins-credentials
+        - configMap:
+            name: {{ printf "jenkins-master-%s" $relname | trunc 63 }}
+          name: kubernetes-cloud
