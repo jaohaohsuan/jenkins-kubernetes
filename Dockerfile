@@ -12,7 +12,8 @@ RUN /usr/local/bin/install-plugins.sh \
     ansible \
     http_request \
     cucumber-testresult-plugin \
-    job-dsl
+    job-dsl \
+    authorize-project
 
 ENV JAVA_OPTS="-Dorg.apache.commons.jelly.tags.fmt.timeZone=Asia/Taipei -Djenkins.install.runSetupWizard=false"
 
