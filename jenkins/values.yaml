@@ -24,3 +24,5 @@ volumes:
     size: 2Gi
     accessModes: ReadWriteMany
     mountPath: /var/jenkins_home/jobs
+jobs:
+  seed: https://github.com/jaohaohsuan/seedjob.git

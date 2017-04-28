@@ -4,6 +4,59 @@ kind: ConfigMap
 metadata:
   name: {{ printf "jenkins-master-%s" .Release.Name | trunc 63 }}
 data:
+  create-seed-job.groovy: |
+    import jenkins.model.*
+    import java.io.*
+    import hudson.cli.BuildCommand
+
+    def jobNames = Jenkins.instance.getJobNames()
+
+    def seedjob = "seed-job"
+
+    if (! jobNames.contains(seedjob)) {
+
+      def configXml = '''
+      <?xml version='1.0' encoding='UTF-8'?>
+      <flow-definition plugin="workflow-job@2.10">
+        <actions/>
+        <description></description>
+        <keepDependencies>false</keepDependencies>
+        <properties>
+          <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+            <triggers/>
+          </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+        </properties>
+        <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.30">
+          <scm class="hudson.plugins.git.GitSCM" plugin="git@3.3.0">
+            <configVersion>2</configVersion>
+            <userRemoteConfigs>
+              <hudson.plugins.git.UserRemoteConfig>
+                <url>{{ .Values.jobs.seed }}</url>
+              </hudson.plugins.git.UserRemoteConfig>
+            </userRemoteConfigs>
+            <branches>
+              <hudson.plugins.git.BranchSpec>
+                <name>*/master</name>
+              </hudson.plugins.git.BranchSpec>
+            </branches>
+            <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+            <submoduleCfg class="list"/>
+            <extensions/>
+          </scm>
+          <scriptPath>Jenkinsfile</scriptPath>
+          <lightweight>true</lightweight>
+        </definition>
+        <triggers/>
+      </flow-definition>'''
+
+
+      configXml = configXml.trim().replaceFirst("^([\\W]+)<","<")
+
+      def xmlStream = new ByteArrayInputStream( configXml.getBytes() )
+
+      Jenkins.instance.createProjectFromXML(seedjob, xmlStream).scheduleBuild(0, new BuildCommand.CLICause())
+
+    }
   credentials.groovy: |
     import jenkins.model.*
     import com.cloudbees.plugins.credentials.*

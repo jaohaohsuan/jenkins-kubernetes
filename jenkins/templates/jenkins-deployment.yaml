@@ -38,12 +38,15 @@ spec:
           - name: {{ .name }}
             mountPath: {{ .mountPath }}
 {{- end }}
-          - name: jenkins-credentials
+          - name: configs
             mountPath: /usr/share/jenkins/ref/init.groovy.d/credentials.groovy
             subPath: credentials.groovy
-          - name: kubernetes-cloud
+          - name: configs
             mountPath: /usr/share/jenkins/ref/init.groovy.d/kubernetes.groovy
             subPath: kubernetes.groovy
+          - name: configs
+            mountPath: /usr/share/jenkins/ref/init.groovy.d/create-seed-job.groovy
+            subPath: create-seed-job.groovy
           - name: docker-sock
             mountPath: /var/run/docker.sock
         env:
@@ -62,7 +65,4 @@ spec:
             path: /var/run/docker.sock
         - configMap:
             name: {{ printf "jenkins-master-%s" $relname | trunc 63 }}
-          name: jenkins-credentials
-        - configMap:
-            name: {{ printf "jenkins-master-%s" $relname | trunc 63 }}
-          name: kubernetes-cloud
+          name: configs
