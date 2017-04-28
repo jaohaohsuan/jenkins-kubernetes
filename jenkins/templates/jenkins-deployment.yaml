@@ -1,15 +1,16 @@
+{{- $relname := .Release.Name -}}
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ printf "%s-%s" .Chart.Name .Release.Name | trunc 63 }}
+  name: {{ printf "%s-%s" .Chart.Name $relname | trunc 63 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
         app: {{ .Chart.Name }}
-        jenkins: {{ printf "master-%s" .Release.Name | trunc 63 }}
+        jenkins: {{ printf "master-%s" $relname | trunc 63 }}
       annotations:
         pod.beta.kubernetes.io/init-containers: '[
           {
@@ -28,11 +29,15 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
-          - containerPort: {{ .Values.service.httpPort }}
-          - containerPort: {{ .Values.service.jnlpPort }}
+{{- range .Values.service.ports }}
+          - name: {{ .name }}
+            containerPort: {{ .port }}
+{{- end }}
         volumeMounts:
-          - name: jobs
-            mountPath: /var/jenkins_home/jobs
+{{- range .Values.volumes }}
+          - name: {{ .name }}
+            mountPath: {{ .mountPath }}
+{{- end }}
           - name: jenkins-credentials
             mountPath: /usr/share/jenkins/ref/init.groovy.d/credentials.groovy
             subPath: credentials.groovy
@@ -42,14 +47,16 @@ spec:
           - name: TRY_UPGRADE_IF_NO_MARKER
             value: "true"
           - name: JAVA_OPTS
-            value: "-Dorg.apache.commons.jelly.tags.fmt.timeZone=Asia/Taipei -Djenkins.install.runSetupWizard=false -Xmx512m -Xms512m"
+            value: "-Dorg.apache.commons.jelly.tags.fmt.timeZone=Asia/Taipei -Djenkins.install.runSetupWizard=false {{ .Values.mem.heapSize }}"
       volumes:
-        - name: jobs
+{{- range .Values.volumes }}
+        - name: {{ .name }}
           persistentVolumeClaim:
-            claimName: {{ printf "jenkins-master-jobs-%s" .Release.Name | trunc 63 }}
+            claimName: {{ printf "jenkins-master-%s-%s" .name $relname | trunc 63 }}
+{{- end }}
         - name: docker-sock
           hostPath:
             path: /var/run/docker.sock
         - configMap:
-            name: {{ printf "jenkins-credentials-%s" .Release.Name | trunc 63 }}
+            name: {{ printf "jenkins-credentials-%s" $relname | trunc 63 }}
           name: jenkins-credentials

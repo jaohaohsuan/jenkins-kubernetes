@@ -1,13 +1,16 @@
+{{- $relname := .Release.Name -}}
+{{- range .Values.volumes }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
- name: {{ printf "jenkins-master-jobs-%s" .Release.Name | trunc 63 }}
+ name: {{ printf "jenkins-master-%s-%s" .name $relname | trunc 63 }}
  annotations:
-   volume.beta.kubernetes.io/storage-class: default
+   volume.beta.kubernetes.io/storage-class: {{ .storageClass }}
 spec:
  accessModes:
-  - ReadWriteMany
+  - {{ .accessModes }}
  resources:
    requests:
-     storage: 5Gi
+     storage: {{ .size }}
+{{- end }}

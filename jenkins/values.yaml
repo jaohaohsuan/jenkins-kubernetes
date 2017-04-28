@@ -7,9 +7,20 @@ image:
   tag: 2.46.2
   pullPolicy: Always
 service:
-  jnlpPort: 50000
-  httpPort: 8080
+  ports:
+    - name: http
+      port: 8080
+    - name: jnlp
+      port: 50000
+mem:
+  heapSize: "-Xmx512m -Xms512m"
 configMap:
   dockerHub:
     username: docker
     password: docker
+volumes:
+  - name: jobs
+    storageClass: default
+    size: 2Gi
+    accessModes: ReadWriteMany
+    mountPath: /var/jenkins_home/jobs
