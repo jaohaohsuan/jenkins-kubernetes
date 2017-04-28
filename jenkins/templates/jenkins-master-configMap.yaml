@@ -5,11 +5,50 @@ metadata:
   name: {{ printf "jenkins-master-%s" .Release.Name | trunc 63 }}
 data:
   credentials.groovy: |
-    import com.cloudbees.plugins.credentials.impl.*;
-    import com.cloudbees.plugins.credentials.*;
-    import com.cloudbees.plugins.credentials.domains.*;
-    Credentials c = (Credentials) new UsernamePasswordCredentialsImpl(CredentialsScope.GLOBAL,"docker-login", "public docker hub account", "{{ .Values.configMap.dockerHub.username }}", "{{ .Values.configMap.dockerHub.password }}")
-    SystemCredentialsProvider.getInstance().getStore().addCredentials(Domain.global(), c)
+    import jenkins.model.*
+    import com.cloudbees.plugins.credentials.*
+    import com.cloudbees.plugins.credentials.impl.*
+    import com.cloudbees.plugins.credentials.common.*
+    import com.cloudbees.plugins.credentials.domains.*
+    import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl
+
+    def changePassword = { username, new_password, id, description ->
+        def creds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
+            com.cloudbees.plugins.credentials.common.StandardUsernameCredentials.class,
+            jenkins.model.Jenkins.instance
+        )
+
+        def result = null
+        def c = creds.findResult { it.username == username ? it : null }
+        def credentials_store = jenkins.model.Jenkins.instance.getExtensionList(
+            'com.cloudbees.plugins.credentials.SystemCredentialsProvider'
+            )[0].getStore()
+
+
+        if ( c ) {
+            println "found credential ${c.id} for username ${c.username}"
+            result = credentials_store.updateCredentials(
+                com.cloudbees.plugins.credentials.domains.Domain.global(), 
+                c, 
+                new UsernamePasswordCredentialsImpl(c.scope, c.id, c.description, c.username, new_password)
+                )
+
+        } else {
+            println "creating credential for ${username}"
+            result = credentials_store.addCredentials(
+                com.cloudbees.plugins.credentials.domains.Domain.global(), 
+                new UsernamePasswordCredentialsImpl( com.cloudbees.plugins.credentials.CredentialsScope.GLOBAL, id, description, username, new_password)
+            )
+        }
+
+        if (result) {
+            println "password changed for ${username}" 
+        } else {
+            println "failed to change password for ${username}"
+        }
+    }
+
+    changePassword("{{ .Values.configMap.dockerHub.username }}", "{{ .Values.configMap.dockerHub.password }}", "docker-login", "public docker hub account")
   kubernetes.groovy: |
     import jenkins.model.Jenkins
     import org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud
