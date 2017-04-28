@@ -32,13 +32,6 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
                     image.push('latest')
                 }
             }
-            if (params.deployToProduction) {
-                stage('deploy') {
-                    container('kubectl') {
-                        sh "kubectl apply -f jenkins-deployment.yaml"
-                    }
-                }
-            }
 
             step([$class: 'LogParserPublisher', failBuildOnError: true, unstableOnWarning: true, showGraphs: true,
                   projectRulePath: 'jenkins-rule-logparser', useProjectRule: true])
