@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ printf "jenkins-master-%s" .Release.Name | trunc 63 }}
+  name: {{ template "fullname" . }}
 data:
   create-seed-job.groovy: |
     import jenkins.model.*
@@ -31,7 +31,7 @@ data:
             <configVersion>2</configVersion>
             <userRemoteConfigs>
               <hudson.plugins.git.UserRemoteConfig>
-                <url>{{ .Values.jobs.seed }}</url>
+                <url>{{ .Values.seedjob }}</url>
               </hudson.plugins.git.UserRemoteConfig>
             </userRemoteConfigs>
             <branches>
@@ -101,7 +101,9 @@ data:
         }
     }
 
-    changePassword("{{ .Values.configMap.dockerHub.username }}", "{{ .Values.configMap.dockerHub.password }}", "docker-login", "public docker hub account")
+    changePassword("{{ required "A valid .Values.dockerHub.username entry required!" .Values.dockerHub.username }}", "{{ required "A valid .Values.dockerHub.password entry required!" .Values.dockerHub.password }}", "docker-login", "public docker hub account")
+    changePassword("{{ required "A valid .Values.helmRepo.username entry required!" .Values.helmRepo.username }}", "{{ required "A valid .Values.helmRepo.password entry required!" .Values.helmRepo.password }}", "helm-repo-credential", "helm repo account")
+
   kubernetes.groovy: |
     import jenkins.model.Jenkins
     import org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud
@@ -121,7 +123,7 @@ data:
     }
 
     kubernetesCloud.setNamespace(env['KUBERNETES_CLOUD_NAMESPACE'] ?: 'default')
-    kubernetesCloud.setJenkinsUrl(env['KUBERNETES_CLOUD_JENKINS_URL'] ?: 'http://{{ template "jenkins.service.name" . }}.default.svc.cluster.local:8080')
+    kubernetesCloud.setJenkinsUrl(env['KUBERNETES_CLOUD_JENKINS_URL'] ?: 'http://{{ template "fullname" . }}.default.svc.cluster.local:{{ .Values.service.http.port }}')
     kubernetesCloud.setServerUrl(env['KUBERNETES_CLOUD_SERVER'] ?: 'https://kubernetes.default.svc.cluster.local')
     kubernetesCloud.setContainerCapStr(env['KUBERNETES_CLOUD_CONTAINER_CAP'] ?: '100')
 

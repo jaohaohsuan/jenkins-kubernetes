@@ -1,24 +1,24 @@
-{{- $relname := .Release.Name -}}
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ printf "%s-%s" .Chart.Name $relname | trunc 63 }}
+  name: {{ template "fullname" . }}
+  labels:
+{{ include "labels" . | indent 4 }}    
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}
-        jenkins: {{ printf "master-%s" $relname | trunc 63 }}
+{{ include "labels.master" . | indent 8 }}
       annotations:
         pod.beta.kubernetes.io/init-containers: '[
           {
             "name": "init",
             "image": "busybox:latest",
-            "command": [ "sh", "-c", "chown 1000:1000 /var/jenkins_home/jobs" ],
+            "command": [ "sh", "-c", "chown 1000:1000 {{ .Values.volumes.jobs.mountPath }}" ],
             "volumeMounts": [
-              { "name": "jobs", "mountPath": "/var/jenkins_home/jobs" }
+              { "name": "jobs", "mountPath": "{{ .Values.volumes.jobs.mountPath }}" }
             ],
             "imagePullPolicy": "IfNotPresent"
           }
@@ -29,15 +29,13 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
-{{- range .Values.service.ports }}
-          - name: {{ .name }}
-            containerPort: {{ .port }}
-{{- end }}
+          - name: http
+            containerPort: {{ .Values.service.http.port }}
+          - name: jnlp
+            containerPort: {{ .Values.service.jnlp.port }}
         volumeMounts:
-{{- range .Values.volumes }}
-          - name: {{ .name }}
-            mountPath: {{ .mountPath }}
-{{- end }}
+          - name: jobs
+            mountPath: {{ .Values.volumes.jobs.mountPath }}
           - name: configs
             mountPath: /usr/share/jenkins/ref/init.groovy.d/credentials.groovy
             subPath: credentials.groovy
@@ -55,14 +53,12 @@ spec:
           - name: JAVA_OPTS
             value: "-Dorg.apache.commons.jelly.tags.fmt.timeZone=Asia/Taipei -Djenkins.install.runSetupWizard=false {{ .Values.mem.heapSize }}"
       volumes:
-{{- range .Values.volumes }}
-        - name: {{ .name }}
+        - name: jobs
           persistentVolumeClaim:
-            claimName: {{ printf "jenkins-master-%s-%s" .name $relname | trunc 63 }}
-{{- end }}
+            claimName: {{ template "volumes.jobs" . }}
         - name: docker-sock
           hostPath:
             path: /var/run/docker.sock
         - configMap:
-            name: {{ printf "jenkins-master-%s" $relname | trunc 63 }}
+            name: {{ template "fullname" . }}
           name: configs

@@ -11,18 +11,18 @@ service:
     port: 8080
   jnlp:
     port: 50000
-
 mem:
   heapSize: "-Xmx512m -Xms512m"
-configMap:
-  dockerHub:
-    username: docker
-    password: docker
 volumes:
-  - name: jobs
+  jobs:
     storageClass: default
     size: 2Gi
     accessModes: ReadWriteMany
     mountPath: /var/jenkins_home/jobs
-jobs:
-  seed: https://github.com/jaohaohsuan/seedjob.git
+seedjob: https://github.com/jaohaohsuan/seedjob.git
+dockerHub:
+  username: ''
+  password: ''
+helmRepo:
+  username: ''
+  password: ''

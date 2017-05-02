@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+ name: {{ template "volumes.jobs" . }}
+ annotations:
+   "helm.sh/resource-policy": keep
+   volume.beta.kubernetes.io/storage-class: {{ .Values.volumes.jobs.storageClass }}
+spec:
+ accessModes:
+  - {{ .Values.volumes.jobs.accessModes }}
+ resources:
+   requests:
+     storage: {{ .Values.volumes.jobs.size }}

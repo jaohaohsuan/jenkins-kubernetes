@@ -12,7 +12,7 @@ To change the defualt docker hub account:
   helm upgrade --set configMap.dockerHub.username=?,configMap.dockerHub.password=? {{ .Release.Name }} {{ .Chart.Name }}
 
 Get the Jenkins URL to visit by running these commands in the same shell:
-  export NODE_PORT=$(kubectl get svc -n {{ .Release.Namespace }} {{ template "jenkins.service.name" . }} -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}')
+  export NODE_PORT=$(kubectl get svc -n {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}')
   export NODE_IP=$(kubectl get no -o jsonpath="{.items[0].status.addresses[0].address}")
   curl --head http://$NODE_IP:$NODE_PORT
   echo "http://$NODE_IP:$NODE_PORT"
