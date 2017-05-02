@@ -15,7 +15,9 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
         containerTemplate(name: 'kubectl', image: 'henryrao/kubectl:1.5.2', ttyEnabled: true, command: 'cat')
     ],
         volumes: [
-                hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
+                hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
+                hostPathVolume(mountPath: '/root/.kube/config', hostPath: '/root/.kube/config'),
+                persistentVolumeClaim(claimName: 'helm-repository', mountPath: '/var/helm/repo', readOnly: false)
         ]
 ) {
     node('jenkins-kubernetes') {
