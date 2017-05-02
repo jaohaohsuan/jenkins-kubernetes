@@ -9,7 +9,8 @@ spec:
     jenkins: {{ printf "master-%s" .Release.Name | trunc 63 }}
     app: {{ .Chart.Name }}
   ports:
-{{- range .Values.service.ports }}
-    - name: {{ .name }}
-      port: {{ .port }}
-{{- end }}
+    - name: http
+      port: {{ .Values.service.http.port }}
+    - name: jnlp
+      port: {{ .Values.service.jnlp.port }}
+

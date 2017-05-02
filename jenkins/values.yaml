@@ -7,11 +7,11 @@ image:
   tag: 2.46.2
   pullPolicy: Always
 service:
-  ports:
-    - name: http
-      port: 8080
-    - name: jnlp
-      port: 50000
+  http:
+    port: 8080
+  jnlp:
+    port: 50000
+
 mem:
   heapSize: "-Xmx512m -Xms512m"
 configMap:

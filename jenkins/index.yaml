@@ -1,17 +1,14 @@
 apiVersion: v1
 entries:
-  jenkins-tls:
+  elasticsearch:
   - apiVersion: v1
-    appVersion: 2.46.2
-    created: 2017-04-28T00:04:04.76128928+08:00
-    description: Jekins TLS running on Kubernetes 1.5+
-    digest: fb3e73a522f8063a20590be524db5b18a7394ffd14c70404b57f72fa5d7b983b
-    icon: https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png?version=1&modificationDate=1302753947000&api=v2
-    maintainers:
-    - name: jaohaohsuan
-    - name: tony24681379
-    name: jenkins-tls
+    appVersion: 2.3.3
+    created: 2017-04-30T11:59:26.581153015+08:00
+    description: elasticsearch cluster
+    digest: ab8bbee238f852084ae9f4c1de0f92fd35161373d3a6ca6b28017bc2087af3de
+    icon: https://worldvectorlogo.com/download/elastic-elasticsearch.svg
+    name: elasticsearch
     urls:
-    - http://127.0.0.1:8879/jenkins-tls-0.1.0.tgz
+    - https://jaohaohsuan.github.io/elasticsearch/elasticsearch-0.1.0.tgz
     version: 0.1.0
-generated: 2017-04-28T00:04:04.760638019+08:00
+generated: 2017-04-30T21:02:23.729379401+08:00

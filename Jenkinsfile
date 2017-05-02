@@ -32,6 +32,16 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
                     image.push('latest')
                 }
             }
+            stage('package') {
+                docker.image('henryrao/helm:2.3.1').inside('') { c ->
+                    sh '''
+                    # packaging
+                    helm package --destination /var/helm/repo jenkins
+                    helm repo index --url https://grandsys.github.io/helm-repository/ --merge /var/helm/repo/index.yaml /var/helm/repo
+                    '''
+                }
+                build job: 'helm-repository/master'
+            }
 
             step([$class: 'LogParserPublisher', failBuildOnError: true, unstableOnWarning: true, showGraphs: true,
                   projectRulePath: 'jenkins-rule-logparser', useProjectRule: true])
