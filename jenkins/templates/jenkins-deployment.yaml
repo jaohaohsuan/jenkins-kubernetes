@@ -12,6 +12,7 @@ spec:
       labels:
 {{ include "labels.master" . | indent 8 }}
       annotations:
+        checksum/jenkins-config: {{ include (print $.Template.BasePath "/jenkins-configMap.yaml") . | sha256sum }}
         pod.beta.kubernetes.io/init-containers: '[
           {
             "name": "init",
