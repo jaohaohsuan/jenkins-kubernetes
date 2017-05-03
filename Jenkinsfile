@@ -37,7 +37,6 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
             stage('package') {
                 docker.image('henryrao/helm:2.3.1').inside('') { c ->
                     sh '''
-                    helm lint jenkins
                     # packaging
                     helm package --destination /var/helm/repo jenkins
                     helm repo index --url https://grandsys.github.io/helm-repository/ --merge /var/helm/repo/index.yaml /var/helm/repo
