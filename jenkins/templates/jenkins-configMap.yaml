@@ -13,13 +13,13 @@ data:
     import com.cloudbees.jenkins.plugins.sshcredentials.impl.*
     import com.cloudbees.plugins.credentials.*
 
-    def retries = 5
+    def retries = 10
     while(CredentialsProvider.lookupCredentials(BasicSSHUserPrivateKey.class, Jenkins.instance)
       .findResult { it.getId() == '{{ .Values.seedjob.credentials }}' ? false : true } && retries > 0 ) {
       retries--
       println("{{ .Values.seedjob.credentials }} not exist.")
       println("${retries} times to retry")
-      sleep 1000
+      sleep 3000
     }
 
     def jobNames = Jenkins.instance.getJobNames()
