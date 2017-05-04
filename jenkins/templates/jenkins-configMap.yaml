@@ -4,8 +4,6 @@ kind: ConfigMap
 metadata:
   name: {{ template "fullname" . }}
 data:
-  {{ required "A valid .Values.gitlab.name entry required!" .Values.gitlab.name }}: |-
-{{ required "A valid .Values.gitlab.key entry required!" .Values.gitlab.key | indent 4 }}
   create-seed-job.groovy: |
     import jenkins.model.*
     import java.io.*
@@ -73,6 +71,7 @@ data:
       // proj.scheduleBuild(0, new BuildCommand.CLICause())
 
     }
+
   credentials.groovy: |
     import jenkins.model.*
     import com.cloudbees.plugins.credentials.*
