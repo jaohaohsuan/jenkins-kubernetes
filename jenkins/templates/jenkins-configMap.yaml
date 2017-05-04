@@ -13,7 +13,7 @@ data:
     import com.cloudbees.jenkins.plugins.sshcredentials.impl.*
     import com.cloudbees.plugins.credentials.*
 
-    def retries = 10
+    /* def retries = 10
     while(CredentialsProvider.lookupCredentials(BasicSSHUserPrivateKey.class, Jenkins.instance)
       .findResult { it.getId() == '{{ .Values.seedjob.credentials }}' ? false : true } && retries > 0 ) {
       retries--
@@ -21,6 +21,7 @@ data:
       println("${retries} times to retry")
       sleep 3000
     }
+    */
 
     def jobNames = Jenkins.instance.getJobNames()
 
@@ -68,7 +69,8 @@ data:
 
       def xmlStream = new ByteArrayInputStream(configXml.getBytes())
 
-      Jenkins.instance.createProjectFromXML(seedjob, xmlStream).scheduleBuild(0, new BuildCommand.CLICause())
+      def proj = Jenkins.instance.createProjectFromXML(seedjob, xmlStream)
+      // proj.scheduleBuild(0, new BuildCommand.CLICause())
 
     }
   credentials.groovy: |
