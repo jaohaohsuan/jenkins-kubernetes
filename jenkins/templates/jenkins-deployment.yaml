@@ -17,11 +17,9 @@ spec:
           {
             "name": "init",
             "image": "busybox:latest",
-            "command": [ "sh", "-c", "chown 1000:1000 {{ .Values.volumes.jobs.mountPath }} /var/jenkins_home/.ssh/* /usr/share/jenkins/ref/init.groovy.d/*.groovy" ],
+            "command": [ "sh", "-c", "chown 1000:1000 {{ .Values.volumes.jobs.mountPath }}" ],
             "volumeMounts": [
-              { "name": "jobs", "mountPath": "{{ .Values.volumes.jobs.mountPath }}" },
-              { "name": "secrets", "mountPath": "/var/jenkins_home/.ssh" },
-              { "name": "configs", "mountPath": "/usr/share/jenkins/ref/init.groovy.d" },
+              { "name": "jobs", "mountPath": "{{ .Values.volumes.jobs.mountPath }}" }
             ],
             "imagePullPolicy": "IfNotPresent"
           }
