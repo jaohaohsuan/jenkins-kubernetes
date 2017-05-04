@@ -5,6 +5,6 @@ maintainers:
   - name: jaohaohsuan
   - name: tony24681379
 icon: "https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png?version=1&modificationDate=1302753947000&api=v2"
-version: 0.1.1
+version: 0.1.2
 appVersion: 2.46.2
 tillerVersion: ">2.3.1"
