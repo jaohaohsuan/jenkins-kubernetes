@@ -4,6 +4,8 @@ kind: ConfigMap
 metadata:
   name: {{ template "fullname" . }}
 data:
+  {{ required "A valid .Values.gitlab.name entry required!" .Values.gitlab.name }}: |
+    {{ required "A valid .Values.gitlab.key entry required!" .Values.gitlab.key }}
   create-seed-job.groovy: |
     import jenkins.model.*
     import java.io.*
@@ -31,7 +33,8 @@ data:
             <configVersion>2</configVersion>
             <userRemoteConfigs>
               <hudson.plugins.git.UserRemoteConfig>
-                <url>{{ .Values.seedjob }}</url>
+                <url>{{ .Values.seedjob.url }}</url>
+                <credentialsId>{{ .Values.seedjob.credentials }}</credentialsId>
               </hudson.plugins.git.UserRemoteConfig>
             </userRemoteConfigs>
             <branches>
@@ -64,45 +67,58 @@ data:
     import com.cloudbees.plugins.credentials.common.*
     import com.cloudbees.plugins.credentials.domains.*
     import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl
+    import com.cloudbees.jenkins.plugins.sshcredentials.impl.*
+    import com.cloudbees.jenkins.plugins.sshcredentials.impl.*;
+    import hudson.plugins.sshslaves.*;
 
-    def changePassword = { username, new_password, id, description ->
-        def creds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
-            com.cloudbees.plugins.credentials.common.StandardUsernameCredentials.class,
-            jenkins.model.Jenkins.instance
-        )
+    
+    def addOrUpdateCredentials = { credentials, clazz ->
 
-        def result = null
-        def c = creds.findResult { it.username == username ? it : null }
-        def credentials_store = jenkins.model.Jenkins.instance.getExtensionList(
-            'com.cloudbees.plugins.credentials.SystemCredentialsProvider'
-            )[0].getStore()
+      global_domain = com.cloudbees.plugins.credentials.domains.Domain.global()
+      credentials_store = jenkins.model.Jenkins.instance.getExtensionList('com.cloudbees.plugins.credentials.SystemCredentialsProvider')[0].getStore()
 
+      creds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(clazz,jenkins.model.Jenkins.instance)
+      exist = creds.findResult { it.getId() == credentials.getId() ? it : null }
 
-        if ( c ) {
-            println "found credential ${c.id} for username ${c.username}"
-            result = credentials_store.updateCredentials(
-                com.cloudbees.plugins.credentials.domains.Domain.global(), 
-                c, 
-                new UsernamePasswordCredentialsImpl(c.scope, c.id, c.description, c.username, new_password)
-                )
+      if (exist) {
+        result = credentials_store.updateCredentials(global_domain, exist, credentials)
+      }
+      else {
+        println "creating credential for ${credentials.getId()}"
+        result = credentials_store.addCredentials(global_domain, credentials)
+      }
 
-        } else {
-            println "creating credential for ${username}"
-            result = credentials_store.addCredentials(
-                com.cloudbees.plugins.credentials.domains.Domain.global(), 
-                new UsernamePasswordCredentialsImpl( com.cloudbees.plugins.credentials.CredentialsScope.GLOBAL, id, description, username, new_password)
-            )
-        }
+      if (result) {
+        println "${credentials.getId()} updated" 
+      } 
+      else {
+        println "failed to change credentials for ${credentials.getId()}"
+      }
 
-        if (result) {
-            println "password changed for ${username}" 
-        } else {
-            println "failed to change password for ${username}"
-        }
     }
 
-    changePassword("{{ required "A valid .Values.dockerHub.username entry required!" .Values.dockerHub.username }}", "{{ required "A valid .Values.dockerHub.password entry required!" .Values.dockerHub.password }}", "docker-login", "public docker hub account")
-    changePassword("{{ required "A valid .Values.helmRepo.username entry required!" .Values.helmRepo.username }}", "{{ required "A valid .Values.helmRepo.password entry required!" .Values.helmRepo.password }}", "helm-repo-credential", "helm repo account")
+    gitlab = new BasicSSHUserPrivateKey(CredentialsScope.GLOBAL,
+          '{{ required "A valid .Values.gitlab.credentialsId entry required!" .Values.gitlab.credentialsId }}',
+          '{{ required "A valid .Values.gitlab.username entry required!" .Values.gitlab.username }}',
+          new BasicSSHUserPrivateKey.FileOnMasterPrivateKeySource('/var/jenkins_home/.ssh/{{ .Values.gitlab.name }}'),
+          '{{ .Values.gitlab.passphrase }}',
+          'gitlab scm account'
+        )
+    addOrUpdateCredentials(gitlab, BasicSSHUserPrivateKey.class)
+
+    dockerHub = new UsernamePasswordCredentialsImpl(CredentialsScope.GLOBAL, 
+      'docker-login', 
+      'public docker hub account', 
+      '{{ required "A valid .Values.dockerHub.username entry required!" .Values.dockerHub.username }}', 
+      '{{ required "A valid .Values.dockerHub.password entry required!" .Values.dockerHub.password }}')
+    addOrUpdateCredentials(dockerHub, StandardUsernameCredentials.class)
+
+    helmRepo = new UsernamePasswordCredentialsImpl(CredentialsScope.GLOBAL, 
+      'helm-repo-credential', 
+      'helm repo account', 
+      '{{ required "A valid .Values.helmRepo.username entry required!" .Values.helmRepo.username }}', 
+      '{{ required "A valid .Values.helmRepo.password entry required!" .Values.helmRepo.password }}')
+    addOrUpdateCredentials(helmRepo, StandardUsernameCredentials.class)
 
   kubernetes.groovy: |
     import jenkins.model.Jenkins

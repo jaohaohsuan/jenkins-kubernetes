@@ -48,6 +48,9 @@ spec:
             subPath: create-seed-job.groovy
           - name: docker-sock
             mountPath: /var/run/docker.sock
+          - name: configs
+            mountPath: /var/jenkins_home/.ssh/{{ required "A valid .Values.gitlab.privateKeyPath entry required!" .Values.gitlab.name }}
+            subPath: {{ required "A valid .Values.gitlab.privateKeyPath entry required!" .Values.gitlab.name }}
         env:
           - name: TRY_UPGRADE_IF_NO_MARKER
             value: "true"
