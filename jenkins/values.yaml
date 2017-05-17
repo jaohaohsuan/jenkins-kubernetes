@@ -23,7 +23,7 @@ caches:
   helm:
     name: helm-repository 
     storageClass: default
-    size: 512Mi
+    size: 0.5Gi
     accessModes: ReadWriteMany
     enabled: true
   ivy2:
@@ -47,3 +47,4 @@ gitlab:
   passphrase: ''
   name: 'gitlab_inu_rsa'
   key: '' 
+volumePolicy: 'drop'
