@@ -2,7 +2,7 @@ FROM jenkins:2.46.2-alpine
 RUN /usr/local/bin/install-plugins.sh \
     workflow-aggregator \
     docker-workflow:1.11 \
-    workflow-job:2.11
+    workflow-job:2.11 \
     blueocean:1.0.1 \
     kubernetes \
     workflow-durable-task-step \
