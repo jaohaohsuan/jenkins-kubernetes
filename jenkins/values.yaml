@@ -20,6 +20,12 @@ volumes:
     accessModes: ReadWriteMany
     mountPath: /var/jenkins_home/jobs
 caches:
+  helm:
+    name: helm-repository 
+    storageClass: default
+    size: 512Mi
+    accessModes: ReadWriteMany
+    enabled: true
   ivy2:
     name: jenkins-ivy2 
     storageClass: default

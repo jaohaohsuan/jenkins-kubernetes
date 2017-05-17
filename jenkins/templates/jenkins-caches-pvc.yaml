@@ -1,18 +1,2 @@
-{{- with .Values.caches.ivy2 }}
-{{- if .enabled }}
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
- name: {{ .name }} 
- annotations:
-   "helm.sh/resource-policy": keep
-   volume.beta.kubernetes.io/storage-class: {{ .storageClass }}
-spec:
- accessModes:
-  - {{ .accessModes }}
- resources:
-   requests:
-     storage: {{ .size }}
-{{- end }}
-{{- end }}
+{{ include "caches.pvc" .Values.caches.ivy2 }}
+{{ include "caches.pvc" .Values.caches.helm }}
