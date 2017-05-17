@@ -1,7 +1,7 @@
 FROM jenkins:2.46.2-alpine
 RUN /usr/local/bin/install-plugins.sh \
     workflow-aggregator \
-    docker-workflow \
+    docker-workflow:2.11 \
     kubernetes \
     workflow-durable-task-step \
     script-security \
