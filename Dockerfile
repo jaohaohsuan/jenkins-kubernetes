@@ -6,7 +6,6 @@ RUN /usr/local/bin/install-plugins.sh \
     workflow-durable-task-step \
     script-security \
     ansicolor \
-    blueocean \
     log-parser \
     git \
     ansible \
