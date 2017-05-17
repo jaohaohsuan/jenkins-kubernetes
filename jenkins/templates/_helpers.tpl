@@ -4,10 +4,6 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 
-{{- define "keepVolume" -}}
-{{- if eq "keep" .Values.volumePolicy}}"helm.sh/resource-policy": keep{{- end}} 
-{{- end -}} 
-
 {{- define "fullname" -}}
 {{ printf "%s-%s" .Chart.Name .Release.Name | trunc 63 }}
 {{- end -}}
@@ -34,14 +30,15 @@ release: {{ .Release.Name }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
- name: {{ .name }} 
- annotations:
-   volume.beta.kubernetes.io/storage-class: {{ .storageClass }}
+  name: {{ .name }} 
+  annotations:
+  	"helm.sh/resource-policy": keep
+    volume.beta.kubernetes.io/storage-class: {{ .storageClass }}
 spec:
- accessModes:
+  accessModes:
   - {{ .accessModes }}
- resources:
-   requests:
-     storage: {{ .size | quote }}
+  resources:
+    requests:
+      storage: {{ .size | quote }}
 {{- end }}
 {{- end -}}

@@ -2,4 +2,6 @@
 *.tgz
 .idea
 user-data
+user-data.*
 *.lock
+jenkins/index.yaml
