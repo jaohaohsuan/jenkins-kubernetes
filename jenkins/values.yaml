@@ -21,9 +21,11 @@ volumes:
     mountPath: /var/jenkins_home/jobs
 caches:
   ivy2:
+    name: jenkins-ivy2 
     storageClass: default
     size: 2Gi
     accessModes: ReadWriteMany
+    enabled: true
 seedjob:
   url: ssh://git@rd.grandsys.com:8687/henry.jao/seedjob.git
   credentials: gitlab-inu
@@ -39,5 +41,3 @@ gitlab:
   passphrase: ''
   name: 'gitlab_inu_rsa'
   key: '' 
-
-
