@@ -23,7 +23,7 @@ caches:
   helm:
     name: helm-repository 
     storageClass: default
-    size: 0.5Gi
+    size: 1Gi
     accessModes: ReadWriteMany
     enabled: true
   ivy2:
@@ -36,15 +36,15 @@ seedjob:
   url: ssh://git@rd.grandsys.com:8687/henry.jao/seedjob.git
   credentials: gitlab-inu
 dockerHub:
-  username: ''
-  password: ''
+  username: '???'
+  password: '???'
 helmRepo:
-  username: ''
-  password: ''
+  username: '???'
+  password: '???'
 gitlab:
   credentialsId: gitlab-inu
   username: gitlab
-  passphrase: ''
+  passphrase: '???'
   name: 'gitlab_inu_rsa'
-  key: '' 
+  key: '-----BEGIN RSA PRIVATE KEY-----' 
 volumePolicy: 'drop'

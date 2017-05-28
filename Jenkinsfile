@@ -22,7 +22,7 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
             stage('push') {
                 docker.withRegistry('https://registry.hub.docker.com/', 'docker-login') {
                     def jenkinsVer = sh(returnStdout: true, script: 'cat Dockerfile | sed -n \'s/FROM jenkins:\\(.*\\)/\\1/p\'').trim()
-                    image.push("${jenkinsVer}-${head}-${env.BUILD_ID}")
+                    image.push("${jenkinsVer}-${env.BUILD_ID}-${head}")
                     //image.push('latest')
                 }
             }
