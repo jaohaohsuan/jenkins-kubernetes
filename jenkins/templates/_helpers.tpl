@@ -32,7 +32,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ .name }} 
   annotations:
-  	"helm.sh/resource-policy": keep
+    "helm.sh/resource-policy": keep
     volume.beta.kubernetes.io/storage-class: {{ .storageClass }}
 spec:
   accessModes:
