@@ -4,7 +4,7 @@
 replicaCount: 1
 image:
   repository: henryrao/jenkins-kubernetes
-  tag: 2.46.2
+  tag: ${BUILD_TAG}
   pullPolicy: Always
 service:
   http:

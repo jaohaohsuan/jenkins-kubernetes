@@ -27,6 +27,9 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
                 }
             }
             stage('package') {
+                sh """
+                sed -i \'s/\${BUILD_TAG}/${jenkinsVer}-${env.BUILD_ID}-${head}/\' jenkins/templates/NOTES.txt jenkins/values.yaml
+                """
                 docker.image('henryrao/helm:2.3.1').inside('') { c ->
                     sh '''
                     # packaging
