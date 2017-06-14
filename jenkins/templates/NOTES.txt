@@ -19,3 +19,7 @@ Get the Jenkins URL to visit by running these commands in the same shell:
 
 Login with default admin password: admin
 
+To upgrade image:
+
+  $ helm upgrade --set image.tag=${BUILD_TAG} -f secret.yaml {{ .Chart.Name }}
+
