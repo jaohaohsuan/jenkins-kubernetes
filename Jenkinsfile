@@ -14,6 +14,8 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
             checkout scm
             
             def head = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+            def jenkinsVer = sh(returnStdout: true, script: 'cat Dockerfile | sed -n \'s/FROM jenkins:\\(.*\\)/\\1/p\'').trim()
+
             def image
 
             stage('build') {
@@ -21,9 +23,8 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
             }
             stage('push') {
                 docker.withRegistry('https://registry.hub.docker.com/', 'docker-login') {
-                    def jenkinsVer = sh(returnStdout: true, script: 'cat Dockerfile | sed -n \'s/FROM jenkins:\\(.*\\)/\\1/p\'').trim()
                     image.push("${jenkinsVer}-${env.BUILD_ID}-${head}")
-                    //image.push('latest')
+                    image.push('latest')
                 }
             }
             stage('package') {
