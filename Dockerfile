@@ -1,4 +1,4 @@
-FROM jenkins:2.60.1-alpine
+FROM jenkins/jenkins:2.60.2-alpine
 RUN /usr/local/bin/install-plugins.sh \
     workflow-aggregator \
     docker-workflow:1.12 \
@@ -24,7 +24,11 @@ ADD javaposse.jobdsl.plugin.GlobalJobDslSecurityConfiguration.xml $JENKINS_HOME
 
 USER root
 RUN apk --no-cache add sudo
+COPY sudoers.d /etc/sudoers.d
 COPY entrypoint.sh /entrypoint.sh
+
+RUN sudo chown -R jenkins "$JENKINS_HOME" /usr/share/jenkins/ref
+
 USER jenkins
 ENTRYPOINT ["/bin/tini","--","/entrypoint.sh"]
 
