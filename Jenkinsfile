@@ -14,7 +14,7 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
             checkout scm
             
             def head = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
-            def jenkinsVer = sh(returnStdout: true, script: 'cat Dockerfile | sed -n \'s/FROM jenkins:\\(.*\\)/\\1/p\'').trim()
+            def jenkinsVer = sh(returnStdout: true, script: 'cat Dockerfile | sed -n \'s/FROM\\s\\+.*jenkins:\\(.*\\)/\\1/p\'').trim()
 
             def image
 
