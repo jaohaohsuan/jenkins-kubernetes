@@ -1,11 +1,12 @@
 #!groovy
 podTemplate(label: 'jenkins-kubernetes', containers: [
         containerTemplate(name: 'jnlp', image: 'henryrao/jnlp-slave', args: '${computer.jnlpmac} ${computer.name}', alwaysPullImage: true),
+        containerTemplate(name: 'helm', image: 'henryrao/helm:2.3.1', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'kubectl', image: 'henryrao/kubectl:1.5.2', ttyEnabled: true, command: 'cat')
     ],
         volumes: [
                 hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
-                hostPathVolume(mountPath: '/root/.kube/config', hostPath: '/root/.kube/config'),
+                hostPathVolume(mountPath: '/root/.kube/config', hostPath: '/home/jenkins/.kube/config'),
                 persistentVolumeClaim(claimName: 'helm-repository', mountPath: '/var/helm/repo', readOnly: false)
         ]
 ) {
@@ -31,11 +32,13 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
                 sh """
                 sed -i \'s/\${BUILD_TAG}/${jenkinsVer}-${env.BUILD_ID}-${head}/\' jenkins/templates/NOTES.txt jenkins/values.yaml
                 """
-                docker.image('henryrao/helm:2.3.1').inside('') { c ->
+                container('helm') { c ->
                     sh '''
                     # packaging
+                    helm init --client-only
                     helm package --destination /var/helm/repo jenkins
-                    helm repo index --url https://grandsys.github.io/helm-repository/ --merge /var/helm/repo/index.yaml /var/helm/repo
+                    merge=`[[ -e '/var/helm/repo/index.yaml' ]] && echo '--merge /var/helm/repo/index.yaml' || echo ''`
+                    helm repo index --url https://grandsys.github.io/helm-repository/ $merge /var/helm/repo
                     '''
                 }
                 build job: 'helm-repository/master', parameters: [string(name: 'commiter', value: "${env.JOB_NAME}\ncommit: ${sh(script: 'git log --format=%B -n 1', returnStdout: true).trim()}")]
