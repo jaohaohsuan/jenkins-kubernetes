@@ -1,2 +1,2 @@
-{{- template "caches.pvc" .Values.caches.ivy2 }}
-{{- template "caches.pvc" .Values.caches.helm }}
+{{- template "caches.pvc" .Values.caches.ivy2 -}}
+{{- template "caches.pvc" .Values.caches.helm -}}

@@ -25,14 +25,16 @@ release: {{ .Release.Name }}
 {{- end -}}
 
 {{- define "caches.pvc" -}}
-{{- if .enabled }}
+{{- if .enabled}}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: {{ .name }} 
   annotations:
+{{- if .keep }}
     "helm.sh/resource-policy": keep
+{{- end}}
     volume.beta.kubernetes.io/storage-class: {{ .storageClass }}
 spec:
   accessModes:
@@ -40,5 +42,5 @@ spec:
   resources:
     requests:
       storage: {{ .size | quote }}
-{{- end }}
-{{- end -}}
+{{- end}}
+{{- end}}

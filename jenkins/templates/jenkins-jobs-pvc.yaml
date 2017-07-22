@@ -4,7 +4,9 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ template "volumes.jobs" . }}
   annotations:
+    {{- if .Values.volumes.jobs.keep }}
     "helm.sh/resource-policy": keep
+    {{- end}}
     volume.beta.kubernetes.io/storage-class: {{ .Values.volumes.jobs.storageClass }}
 spec:
   accessModes:

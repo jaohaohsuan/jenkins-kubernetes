@@ -1,10 +1,10 @@
 apiVersion: v1
-description: Jekins TLS running on Kubernetes 1.7+
+description: Jekins TLS running on Kubernetes 1.7+ with RBAC
 name: jenkins
 maintainers:
   - name: jaohaohsuan
   - name: tony24681379
 icon: "https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png?version=1&modificationDate=1302753947000&api=v2"
-version: 0.2.0
-appVersion: 2.60.1
+version: 0.2.1
+appVersion: 2.60.2
 tillerVersion: ">2.3.1"

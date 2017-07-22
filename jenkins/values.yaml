@@ -19,6 +19,7 @@ volumes:
     size: 2Gi
     accessModes: ReadWriteOnce
     mountPath: /var/jenkins_home/jobs
+    keep: false
 caches:
   helm:
     name: helm-repository 
@@ -26,12 +27,14 @@ caches:
     size: 1Gi
     accessModes: ReadWriteOnce
     enabled: true
+    keep: false
   ivy2:
     name: jenkins-ivy2 
     storageClass: default
     size: 2Gi
     accessModes: ReadWriteOnce
     enabled: true
+    keep: false
 seedjob:
   url: ssh://git@rd.grandsys.com:8687/henry.jao/seedjob.git
   credentials: gitlab-inu
@@ -50,4 +53,3 @@ gitlab:
   passphrase: '???'
   name: 'gitlab_inu_rsa'
   key: '-----BEGIN RSA PRIVATE KEY-----' 
-volumePolicy: 'drop'
