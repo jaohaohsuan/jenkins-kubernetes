@@ -36,6 +36,12 @@ spec:
           - name: configs
             mountPath: /usr/share/jenkins/ref/init.groovy.d/create-seed-job.groovy
             subPath: create-seed-job.groovy
+          - name: configs
+            mountPath: /usr/share/jenkins/ref/init.groovy.d/create-users.groovy
+            subPath: create-users.groovy
+          - name: configs
+            mountPath: /usr/share/jenkins/ref/init.groovy.d/basic-security.groovy
+            subPath: basic-security.groovy
           - name: docker-sock
             mountPath: /var/run/docker.sock
           - name: secrets

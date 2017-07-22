@@ -39,8 +39,10 @@ seedjob:
   url: ssh://git@rd.grandsys.com:8687/henry.jao/seedjob.git
   credentials: gitlab-inu
 users:
-  - name: admin
-    passwd: admin
+  - name: henry
+    passwd: henry
+adminUser: admin
+adminPasswd: admin
 dockerHub:
   username: '???'
   password: '???'
