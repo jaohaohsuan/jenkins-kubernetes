@@ -4,6 +4,29 @@ kind: ConfigMap
 metadata:
   name: {{ template "fullname" . }}
 data:
+  global-envs.groovy: |
+    instance = Jenkins.getInstance()
+    globalNodeProperties = instance.getGlobalNodeProperties()
+    envVarsNodePropertyList = globalNodeProperties.getAll(hudson.slaves.EnvironmentVariablesNodeProperty.class)
+
+    newEnvVarsNodeProperty = null
+    envVars = null
+
+    if ( envVarsNodePropertyList == null || envVarsNodePropertyList.size() == 0 ) {
+      newEnvVarsNodeProperty = new hudson.slaves.EnvironmentVariablesNodeProperty()
+      globalNodeProperties.add(newEnvVarsNodeProperty)
+      envVars = newEnvVarsNodeProperty.getEnvVars()
+      
+    } else {
+      envVars = envVarsNodePropertyList.get(0).getEnvVars()
+    }
+
+    {{- range .Values.envs }}
+      envVars.put('{{ .name }}', '{{ .value }}')
+    {{- end}}
+    
+
+    instance.save()
   basic-security.groovy: |
     import hudson.security.*
     import jenkins.model.*
@@ -162,12 +185,12 @@ data:
         )
     addOrUpdateCredentials(gitlab, BasicSSHUserPrivateKey.class)
 
-    dockerHub = new UsernamePasswordCredentialsImpl(CredentialsScope.GLOBAL, 
+    dockerRegistry = new UsernamePasswordCredentialsImpl(CredentialsScope.GLOBAL, 
       'docker-login', 
-      'public docker hub account', 
-      '{{ required "A valid .Values.dockerHub.username entry required!" .Values.dockerHub.username }}', 
-      '{{ required "A valid .Values.dockerHub.password entry required!" .Values.dockerHub.password }}')
-    addOrUpdateCredentials(dockerHub, StandardUsernameCredentials.class)
+      'docker registry account', 
+      '{{ required "A valid .Values.dockerRegistry.username entry required!" .Values.dockerRegistry.username }}', 
+      '{{ required "A valid .Values.dockerRegistry.password entry required!" .Values.dockerRegistry.password }}')
+    addOrUpdateCredentials(dockerRegistry, StandardUsernameCredentials.class)
 
     helmRepo = new UsernamePasswordCredentialsImpl(CredentialsScope.GLOBAL, 
       'helm-repo-credential', 

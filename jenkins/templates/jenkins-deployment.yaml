@@ -42,6 +42,9 @@ spec:
           - name: configs
             mountPath: /usr/share/jenkins/ref/init.groovy.d/basic-security.groovy
             subPath: basic-security.groovy
+          - name: configs
+            mountPath: /usr/share/jenkins/ref/init.groovy.d/global-envs.groovy
+            subPath: global-envs.groovy
           - name: docker-sock
             mountPath: /var/run/docker.sock
           - name: secrets
@@ -50,7 +53,10 @@ spec:
           - name: TRY_UPGRADE_IF_NO_MARKER
             value: "true"
           - name: JAVA_OPTS
-            value: "-Dorg.apache.commons.jelly.tags.fmt.timeZone=Asia/Taipei -Djenkins.install.runSetupWizard=false {{ .Values.mem.heapSize }}"
+            value: |-
+              -Dorg.apache.commons.jelly.tags.fmt.timeZone=Asia/Taipei
+              -Djenkins.install.runSetupWizard=false {{ .Values.mem.heapSize }}
+              -Dhudson.footerURL={{ .Values.footerUrl }}
       volumes:
         - name: jobs
           persistentVolumeClaim:

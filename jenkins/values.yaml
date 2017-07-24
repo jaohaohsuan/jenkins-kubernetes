@@ -13,6 +13,7 @@ service:
     port: 50000
 mem:
   heapSize: "-Xmx1024m -Xms1024m"
+footerUrl: https://www.grandsys.com.tw
 volumes:
   jobs:
     storageClass: default
@@ -38,12 +39,19 @@ caches:
 seedjob:
   url: ssh://git@rd.grandsys.com:8687/henry.jao/seedjob.git
   credentials: gitlab-inu
+envs:
+  - name: PRIVATE_REGISTRY_URL
+    value: 'https://docker.grandsys.com/v2/'
+  - name: PRIVATE_REGISTRY
+    value: docker.grandsys.com
+  - name: JNLP_SLAVE_IMAGE
+    value: docker.grandsys.com/jenkins/jnlp-slave:3.7
 users:
   - name: henry
     passwd: henry
 adminUser: admin
 adminPasswd: admin
-dockerHub:
+dockerRegistry:
   username: '???'
   password: '???'
 helmRepo:

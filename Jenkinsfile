@@ -1,6 +1,7 @@
 #!groovy
+def registry = 'docker.grandsys.com'
 podTemplate(label: 'jenkins-kubernetes', containers: [
-        containerTemplate(name: 'jnlp', image: 'henryrao/jnlp-slave', args: '${computer.jnlpmac} ${computer.name}', alwaysPullImage: true),
+        containerTemplate(name: 'jnlp', image: "${registry}/jenkins/jnlp-slave:3.7", args: '${computer.jnlpmac} ${computer.name}', alwaysPullImage: true),
         containerTemplate(name: 'helm', image: 'henryrao/helm:2.3.1', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'kubectl', image: 'henryrao/kubectl:1.5.2', ttyEnabled: true, command: 'cat')
     ],
@@ -20,10 +21,10 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
             def image
 
             stage('build') {
-                image = docker.build("henryrao/jenkins-kubernetes", "--no-cache=true --pull .")
+                image = docker.build("${registry}/jenkins/jenkins", "--no-cache=true --pull .")
             }
             stage('push') {
-                docker.withRegistry('https://registry.hub.docker.com/', 'docker-login') {
+                docker.withRegistry('https://docker.grandsys.com/v2/', 'docker-login') {
                     image.push("${jenkinsVer}-${env.BUILD_ID}-${head}")
                     image.push('latest')
                 }

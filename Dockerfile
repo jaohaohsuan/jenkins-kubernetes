@@ -27,7 +27,7 @@ RUN apk --no-cache add sudo
 COPY sudoers.d /etc/sudoers.d
 COPY entrypoint.sh /entrypoint.sh
 
-RUN sudo chown -R jenkins "$JENKINS_HOME" /usr/share/jenkins/ref
+RUN chown -R jenkins "$JENKINS_HOME" /usr/share/jenkins/ref
 
 USER jenkins
 ENTRYPOINT ["/bin/tini","--","/entrypoint.sh"]
