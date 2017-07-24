@@ -5,6 +5,8 @@ metadata:
   name: {{ template "fullname" . }}
 data:
   global-envs.groovy: |
+    import jenkins.model.Jenkins
+    
     instance = Jenkins.getInstance()
     globalNodeProperties = instance.getGlobalNodeProperties()
     envVarsNodePropertyList = globalNodeProperties.getAll(hudson.slaves.EnvironmentVariablesNodeProperty.class)
@@ -25,7 +27,6 @@ data:
       envVars.put('{{ .name }}', '{{ .value }}')
     {{- end}}
     
-
     instance.save()
   basic-security.groovy: |
     import hudson.security.*
