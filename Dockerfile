@@ -20,6 +20,7 @@ ENV JAVA_OPTS="-Dorg.apache.commons.jelly.tags.fmt.timeZone=Asia/Taipei -Djenkin
 
 COPY init.groovy.d /usr/share/jenkins/ref/init.groovy.d
 ADD jenkins.CLI.xml $JENKINS_HOME
+ADD plugins $JENKINS_HOME/plugins
 ADD javaposse.jobdsl.plugin.GlobalJobDslSecurityConfiguration.xml $JENKINS_HOME
 
 USER root
