@@ -24,7 +24,7 @@ data:
     }
 
     {{- range .Values.envs }}
-      envVars.put('{{ .name }}', '{{ .value }}')
+    envVars.put('{{ .name }}', '{{ .value }}')
     {{- end}}
     
     instance.save()
