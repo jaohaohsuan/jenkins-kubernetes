@@ -8,7 +8,7 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
         volumes: [
                 hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
                 hostPathVolume(mountPath: '/root/.kube/config', hostPath: '/home/jenkins/.kube/config'),
-                persistentVolumeClaim(claimName: 'helm-repository', mountPath: '/var/helm/repo', readOnly: false)
+                persistentVolumeClaim(claimName: 'helm-repository', mountPath: '/var/helm/', readOnly: false)
         ]
 ) {
     node('jenkins-kubernetes') {
