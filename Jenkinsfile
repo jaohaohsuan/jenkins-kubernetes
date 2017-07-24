@@ -25,13 +25,13 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
             }
             stage('push') {
                 docker.withRegistry('https://docker.grandsys.com/v2/', 'docker-login') {
-                    image.push("${jenkinsVer}-${env.BUILD_ID}-${head}")
+                    image.push("${jenkinsVer}-${head}-${env.BUILD_ID}")
                     image.push('latest')
                 }
             }
             stage('package') {
                 sh """
-                sed -i \'s/\${BUILD_TAG}/${jenkinsVer}-${env.BUILD_ID}-${head}/\' jenkins/templates/NOTES.txt jenkins/values.yaml
+                sed -i \'s/\${BUILD_TAG}/${jenkinsVer}-${head}-${env.BUILD_ID}/\' jenkins/templates/NOTES.txt jenkins/values.yaml
                 """
                 container('helm') { c ->
                     sh '''
