@@ -12,7 +12,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 heritage: {{ .Release.Service }}
 release: {{ .Release.Name }}
 chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-{{- end -}}
+{{- end}}
 
 {{- define "labels.master" -}}
 component: master

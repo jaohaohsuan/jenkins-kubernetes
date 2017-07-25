@@ -1,4 +1,5 @@
 {{- $relname := .Release.Name -}}
+{{- $labels := include "labels" . -}}
 {{- range $el := .Values.caches }}
 {{- if $el.enabled}}
 ---
@@ -7,7 +8,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ $el.name }}-{{ $relname }}
   labels:
-{{ include "labels" . | indent 4 }}
+{{ $labels | indent 4 }}
   annotations:
 {{- if $el.keep }}
     "helm.sh/resource-policy": keep
