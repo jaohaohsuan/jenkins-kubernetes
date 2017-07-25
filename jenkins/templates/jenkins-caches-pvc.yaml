@@ -1,2 +1,23 @@
-{{- template "caches.pvc" .Values.caches.ivy2 -}}
-{{- template "caches.pvc" .Values.caches.helm -}}
+{{- $relname := .Release.Name -}}
+{{- range $el := .Values.caches }}
+{{- if $el.enabled}}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $el.name }}-{{ $relname }}
+  labels:
+{{ include "labels" . | indent 4 }}
+  annotations:
+{{- if $el.keep }}
+    "helm.sh/resource-policy": keep
+{{- end}}
+    volume.beta.kubernetes.io/storage-class: {{ $el.storageClass }}
+spec:
+  accessModes:
+  - {{ $el.accessModes }}
+  resources:
+    requests:
+      storage: {{ $el.size | quote }}
+{{- end}}
+{{- end}}

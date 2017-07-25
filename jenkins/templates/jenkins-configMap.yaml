@@ -1,8 +1,11 @@
+{{- $relname := .Release.Name -}}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "fullname" . }}
+  labels:
+{{ include "labels" . | indent 4 }}
 data:
   global-envs.groovy: |
     import jenkins.model.Jenkins
@@ -25,6 +28,9 @@ data:
 
     {{- range .Values.envs }}
     envVars.put('{{ .name }}', '{{ .value }}')
+    {{- end}}
+    {{- range .Values.caches }}
+    envVars.put('{{ .name | replace "-" "_" | upper }}', '{{ .name }}-{{ $relname }}')
     {{- end}}
     
     instance.save()

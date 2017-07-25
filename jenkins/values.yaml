@@ -22,19 +22,17 @@ volumes:
     mountPath: /var/jenkins_home/jobs
     keep: false
 caches:
-  helm:
-    name: helm-repository 
+  - name: helm-repository
     storageClass: default
     size: 1Gi
     accessModes: ReadWriteOnce
-    enabled: true
+    enabled: false
     keep: false
-  ivy2:
-    name: jenkins-ivy2 
+  - name: jenkins-ivy2
     storageClass: default
     size: 2Gi
     accessModes: ReadWriteOnce
-    enabled: true
+    enabled: false
     keep: false
 seedjob:
   url: ssh://git@rd.grandsys.com:8687/henry.jao/seedjob.git
@@ -46,6 +44,8 @@ envs:
     value: docker.grandsys.com
   - name: JNLP_SLAVE_IMAGE
     value: docker.grandsys.com/jenkins/jnlp-slave:3.7
+  - name: HELM_PUBLIC_REPO_URL
+    value: https://grandsys.github.io/helm-repository/
 users:
   - name: henry
     passwd: henry

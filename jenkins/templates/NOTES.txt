@@ -17,9 +17,9 @@ Get the Jenkins URL to visit by running these commands in the same shell:
   curl --head http://$NODE_IP:$NODE_PORT
   echo "http://$NODE_IP:$NODE_PORT"
 
-Login with default admin password: admin
+Login with default admin uid: {{ .Values.adminUser }} password: {{ .Values.adminPasswd }}
 
 To upgrade image:
 
-  $ helm upgrade --set image.tag=${BUILD_TAG} -f secret.yaml {{ .Chart.Name }}
+  $ helm upgrade --set image.tag=${BUILD_TAG} -f new_values.yaml {your_repo}/{{ .Chart.Name }}
 

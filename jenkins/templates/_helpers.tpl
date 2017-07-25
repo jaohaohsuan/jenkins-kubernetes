@@ -23,24 +23,3 @@ release: {{ .Release.Name }}
 {{- define "volumes.jobs" -}}
 {{ printf "%s-jobs-%s" .Chart.Name .Release.Name | trunc 63 }}
 {{- end -}}
-
-{{- define "caches.pvc" -}}
-{{- if .enabled}}
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ .name }} 
-  annotations:
-{{- if .keep }}
-    "helm.sh/resource-policy": keep
-{{- end}}
-    volume.beta.kubernetes.io/storage-class: {{ .storageClass }}
-spec:
-  accessModes:
-  - {{ .accessModes }}
-  resources:
-    requests:
-      storage: {{ .size | quote }}
-{{- end}}
-{{- end}}
