@@ -4,7 +4,7 @@ RUN /usr/local/bin/install-plugins.sh \
     workflow-aggregator \
     docker-workflow:1.12 \
     workflow-job:2.12.1 \
-    blueocean:1.1.4 \
+    blueocean:1.1.5 \
     workflow-durable-task-step \
     script-security \
     ansicolor \
