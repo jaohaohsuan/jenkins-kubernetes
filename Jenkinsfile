@@ -42,10 +42,11 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
                         sh 'helm lint .'
                         sh 'helm package --destination /var/helm/repo .'
                     }
-                    sh """
-                    merge=`[[ -e '/var/helm/repo/index.yaml' ]] && echo '--merge /var/helm/repo/index.yaml' || echo ''`
-                    helm repo index --url ${env.HELM_PUBLIC_REPO_URL} \$merge /var/helm/repo
-                    """
+                    dir('/var/helm/repo') {
+                        def flags = "--url ${env.HELM_PUBLIC_REPO_URL}"
+                        flags = fileExists('index.yaml') ? "${flags} --merge index.yaml" : flags
+                        sh "helm repo index ${flags} ."
+                    }
                 }
                 build job: 'helm-repository/master', parameters: [string(name: 'commiter', value: "${env.JOB_NAME}\ncommit: ${commit_log}")]
             }
