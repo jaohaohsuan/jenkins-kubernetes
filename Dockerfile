@@ -4,6 +4,7 @@ RUN /usr/local/bin/install-plugins.sh \
     workflow-aggregator \
     docker-workflow:1.12 \
     workflow-job:2.12.1 \
+    kubernetes:0.12 \
     blueocean:1.1.5 \
     workflow-durable-task-step \
     script-security \
@@ -26,7 +27,7 @@ USER root
 RUN apk --no-cache add sudo
 COPY sudoers.d /etc/sudoers.d
 COPY entrypoint.sh /entrypoint.sh
-COPY plugins  /usr/share/jenkins/ref/plugins
+# COPY plugins  /usr/share/jenkins/ref/plugins
 
 RUN chown -R jenkins.jenkins "$JENKINS_HOME" /usr/share/jenkins/ref
 

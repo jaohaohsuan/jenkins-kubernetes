@@ -3,7 +3,7 @@
 JENKINS_JOBS=${JENKINS_JOBS:-${JENKINS_HOME}/jobs} 
 
 if [ ! -d "$JENKINS_JOBS" ]; then
-  echo "$JENKINS_JOBS" not exist 
+  echo "error: $JENKINS_JOBS" not exist
 fi
 
 sudo chown jenkins.jenkins ${JENKINS_JOBS}
