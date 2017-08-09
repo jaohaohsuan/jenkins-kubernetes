@@ -2,10 +2,10 @@ FROM jenkins/jenkins:2.60.2-alpine
 
 RUN /usr/local/bin/install-plugins.sh \
     workflow-aggregator \
-    docker-workflow:1.12 \
+    docker-workflow:1.13 \
     workflow-job:2.12.2 \
     kubernetes:0.12 \
-    blueocean:1.1.5 \
+    blueocean:1.1.6 \
     workflow-durable-task-step \
     script-security \
     ansicolor \
