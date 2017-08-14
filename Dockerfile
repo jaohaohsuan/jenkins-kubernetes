@@ -2,7 +2,7 @@ FROM jenkins/jenkins:2.60.2-alpine
 
 RUN /usr/local/bin/install-plugins.sh \
     workflow-aggregator \
-    docker-workflow:1.13 \
+    docker-workflow:1.12 \
     workflow-job:2.12.2 \
     kubernetes:0.12 \
     blueocean:1.1.7 \
