@@ -41,5 +41,5 @@ def createView(String viewName, String jobRegex) {
 }
 
 createView('exp','.*?(test|exp).*')
-createView('inu','.*?(inu|storedq).*')
+createView('inu','.*?([iI][nN][uU]|storedq).*')
 createView('infra','.*?(sbt|jenkins|elasticsearch|jnlp|docker|kube).*')
