@@ -16,7 +16,8 @@ RUN /usr/local/bin/install-plugins.sh \
     cucumber-testresult-plugin \
     job-dsl \
     authorize-project \
-    copyartifact
+    copyartifact \
+    role-strategy
 
 ENV JAVA_OPTS="-Dorg.apache.commons.jelly.tags.fmt.timeZone=Asia/Taipei -Djenkins.install.runSetupWizard=false"
 
