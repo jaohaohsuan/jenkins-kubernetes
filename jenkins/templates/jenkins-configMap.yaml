@@ -57,6 +57,7 @@ data:
 
         def strategy = new FullControlOnceLoggedInAuthorizationStrategy()
         instance.setAuthorizationStrategy(strategy)
+        strategy.setAllowAnonymousRead(false)
 
         instance.save()
     }
