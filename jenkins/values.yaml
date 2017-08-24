@@ -46,6 +46,10 @@ envs:
     value: docker.grandsys.com/jenkins/jnlp-slave:3.7
   - name: HELM_PUBLIC_REPO_URL
     value: https://grandsys.github.io/helm-repository/
+  - name: GOLANG_VER
+    value: "1.8.3"
+  - name: GOPATH
+    value: "/go"
 users:
   - name: henry
     passwd: henry
