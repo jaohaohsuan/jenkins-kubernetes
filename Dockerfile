@@ -5,7 +5,7 @@ RUN /usr/local/bin/install-plugins.sh \
     docker-workflow:1.12 \
     workflow-job:2.12.2 \
     kubernetes:0.12 \
-    blueocean:1.1.7 \
+    blueocean:1.2.0 \
     workflow-durable-task-step \
     script-security \
     ansicolor \

@@ -38,6 +38,8 @@ seedjob:
   url: ssh://git@rd.grandsys.com:8687/henry.jao/seedjob.git
   credentials: gitlab-inu
 envs:
+  - name: HELM_IMAGE
+    value: docker.grandsys.com/library/helm:2.6.0
   - name: PRIVATE_REGISTRY_URL
     value: 'https://docker.grandsys.com/v2/'
   - name: PRIVATE_REGISTRY
