@@ -17,5 +17,5 @@ Login with default admin {{ .Values.adminUser }}/{{ .Values.adminPasswd }}
 
 To upgrade image:
 
-  $ helm upgrade --set image.tag=${BUILD_TAG} -f new_values.yaml {your_repo}/{{ .Chart.Name }}
+  $ helm upgrade --set image.tag=${BUILD_TAG} -f new_values.yaml {{ .Values.remoteRepo }}/{{ .Chart.Name }}
 
