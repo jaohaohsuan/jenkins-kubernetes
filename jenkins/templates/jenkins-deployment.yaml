@@ -19,6 +19,11 @@ spec:
       - name: jenkins
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        readinessProbe:
+          tcpSocket:
+            port: {{ .Values.service.http.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
         ports:
           - name: http
             containerPort: {{ .Values.service.http.port }}
