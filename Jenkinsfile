@@ -1,5 +1,7 @@
 #!groovy
-podTemplate(label: 'jenkins-kubernetes', containers: [
+def podLabel = "${env.JOB_NAME}-${env.BUILD_NUMBER}".replace('/', '-').replace('.', '')
+
+podTemplate(label: podLabel, containers: [
     containerTemplate(name: 'jnlp', image: env.JNLP_SLAVE_IMAGE, args: '${computer.jnlpmac} ${computer.name}', alwaysPullImage: true),
     containerTemplate(name: 'kube', image: "${env.PRIVATE_REGISTRY}/library/kubectl:v1.7.2", ttyEnabled: true, command: 'cat'),
     containerTemplate(name: 'helm', image: 'henryrao/helm:2.3.1', ttyEnabled: true, command: 'cat'),
@@ -13,7 +15,7 @@ podTemplate(label: 'jenkins-kubernetes', containers: [
         persistentVolumeClaim(claimName: env.HELM_REPOSITORY, mountPath: '/var/helm/', readOnly: false)
     ]
 ) {
-    node('jenkins-kubernetes') {
+    node(podLabel) {
         ansiColor('xterm') {
             checkout scm
             
