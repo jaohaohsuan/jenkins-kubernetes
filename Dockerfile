@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:2.60.3-alpine
+FROM jenkins/jenkins:2.73-alpine
 
 RUN /usr/local/bin/install-plugins.sh \
     workflow-aggregator \
