@@ -11,6 +11,7 @@ RUN /usr/local/bin/install-plugins.sh \
     ansicolor \
     log-parser \
     git \
+    ssh-agent \
     ansible \
     http_request \
     cucumber-testresult-plugin \
